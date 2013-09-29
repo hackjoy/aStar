@@ -1,7 +1,6 @@
 describe("A* search", function() {
 
   beforeEach(function () {
-    
   });
 
   // actual distance from current square to start position
@@ -23,26 +22,23 @@ describe("A* search", function() {
     expect(gCost).toEqual(20);   
   });
 
+  // sum of G and H costs
   it("should calculate the F cost of the current coordinates", function() {  
     var currentCoordinates = {id: 1, parent: 1, x: 1, y: 1, gCost: 20, hCost: 30};
     var fCost = calculateFCost(currentCoordinates);    
     expect(fCost).toEqual(50);   
   });
+
+  it("should find the coordinates in the open list with the lowest F Cost", function() {  
+    var visitedCoordinates1 = {x: 1, y: 1, fCost: 30, gCost: 0, hCost: 30, parent: 1};
+    var visitedCoordinates2 = {x: 2, y: 1, fCost: 30, gCost: 10, hCost: 20, parent: 1};
+    var visitedCoordinates3 = {x: 2, y: 1, fCost: 20, gCost: 10, hCost: 20, parent: 1};
+    var openList = [visitedCoordinates1, visitedCoordinates2, visitedCoordinates3]
+    var lowestFCost = findPointWithLowestFCost(openList);
+    expect(lowestFCost).toEqual(visitedCoordinates3);   
+  });
 });
 
-
-
-// describe("finding the lowest F cost in the open list", function() {
-
-//   it("should find the point in the open list which has the lowest F Cost", function() {  
-//     var point1 = {x: 3, y: 1, fCost: 4};
-//     var point2 = {x: 2, y: 2, fCost: 3};
-//     var point3 = {x: 1, y: 2, fCost: 1};
-//     var openList = [point1, point2, point3]
-//     var lowestFCost = findPointWithLowestFCost(openList);
-//     expect(lowestFCost).toEqual(point3);   
-//   });
-// });
 
 // describe("completion of a star search", function() {
 

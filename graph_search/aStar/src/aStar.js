@@ -5,7 +5,6 @@ function forEach(array, action) {
   }
 } 
 
-
 function calculateGCost(currentCoordinates, currentCoordinatesID, closedList) {
   var previousGCost = closedList[((currentCoordinatesID) - 1)].gCost
   var currentMovementCost = 10
@@ -22,18 +21,18 @@ function calculateFCost(currentCoordinates) {
 }
 
 // returns {point} from the [openList] with the lowest fCost 
-// function findPointWithLowestFCost(openList) {
-//   var pointWithLowestFCost = undefined
-//   forEach(openList, function (element) {
-//     if (pointWithLowestFCost == undefined) {
-//       pointWithLowestFCost = element; 
-//     }
-//     else if (element["fCost"] < pointWithLowestFCost["fCost"]) {
-//       pointWithLowestFCost = element;
-//     }
-//   });
-//   return pointWithLowestFCost;    
-// } 
+function findPointWithLowestFCost(openList) {
+  var pointWithLowestFCost = undefined
+  forEach(openList, function (element) {
+    if (pointWithLowestFCost == undefined) {
+      pointWithLowestFCost = element; 
+    }
+    else if (element["fCost"] < pointWithLowestFCost["fCost"]) {
+      pointWithLowestFCost = element;
+    }
+  });
+  return pointWithLowestFCost;    
+} 
 
 // function validateCoordinates(coordinates) {
 //   // check that newCoordinate is within bounds of planet and is not a wall

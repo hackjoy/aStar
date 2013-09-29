@@ -5,12 +5,11 @@ function forEach(array, action) {
   }
 } 
 
- // NEED TO THINK ABOUT TRACING PARENT SQuares and how ther are stored in the algorithm
-function calculateGCost(movementsFromStartToCurrentCoordinates) {
-  gCost = 0;
-  for (point in movementsFromStartToCurrentCoordinates) {
-    gCost += point["movementCost"];
-  }    
+
+function calculateGCost(currentCoordinates, currentCoordinatesID, closedList) {
+  var previousGCost = closedList[((currentCoordinatesID) - 1)].gCost
+  var currentMovementCost = 10
+  return previousGCost + currentMovementCost;
 }   
 
 // calculates estimated distance to the destination co-ordinates from current co-ordinates in absolute terms, ignoring diagonal moves and obstacles
@@ -18,56 +17,67 @@ function calculateHCost(currentCoordinates, destinationCoordinates) {
   return (Math.abs(destinationCoordinates["x"] - currentCoordinates["x"]) * 10) + (Math.abs(destinationCoordinates["y"] - currentCoordinates["y"]) * 10)
 }
 
-function calculateFCost(startPoint) {
-  return (startPoint["hCost"] + startPoint["gCost"]);
+function calculateFCost(currentCoordinates) {
+  return (currentCoordinates["hCost"] + currentCoordinates["gCost"]);
 }
 
 // returns {point} from the [openList] with the lowest fCost 
-function findPointWithLowestFCost(openList) {
-  var pointWithLowestFCost = undefined
-  forEach(openList, function (element) {
-    if (pointWithLowestFCost == undefined) {
-      pointWithLowestFCost = element; 
-    }
-    else if (element["fCost"] < pointWithLowestFCost["fCost"]) {
-      pointWithLowestFCost = element;
-    }
-  });
-  return pointWithLowestFCost;    
-} 
+// function findPointWithLowestFCost(openList) {
+//   var pointWithLowestFCost = undefined
+//   forEach(openList, function (element) {
+//     if (pointWithLowestFCost == undefined) {
+//       pointWithLowestFCost = element; 
+//     }
+//     else if (element["fCost"] < pointWithLowestFCost["fCost"]) {
+//       pointWithLowestFCost = element;
+//     }
+//   });
+//   return pointWithLowestFCost;    
+// } 
 
-function checkCoordinateIsValid(coordinate) {
-  // check that newCoordinate is within bounds of planet and is not a wall
-}
+// function validateCoordinates(coordinates) {
+//   // check that newCoordinate is within bounds of planet and is not a wall
+// }
 
 // accepts a world data hash, start coordinates and destination coordinates hash
-function aStarSearch(worldData, startCoordinates, destinationCoordinates) {
+// function aStarSearch(worldData, startCoordinates, destinationCoordinates) {
 
-  var movements = {north:     {x: 0, y: 1, cost: 10}
-                  ,northEast: {x: 1, y: 1, cost: 14} 
-                  ,east:      {x: 1, y: 0, cost: 10} 
-                  ,southEast: {x: 1, y: -1, cost: 14}
-                  ,south:     {x: 0, y: -1, cost: 10} 
-                  ,southWest: {x: -1, y: -1, cost: 14} 
-                  ,west:      {x: -1, y: 0, cost: 10} 
-                  ,northWest: {x: -1, y: 1, cost: 14}
-  };
-  var openList = [];
-  var closedList = [];
-  var startPoint = {id: "0"
-                   ,parent: "0"
-                   ,x: startCoordinates["x"]
-                   ,y: startCoordinates["y"] 
-                   ,gCost: 0
-                   ,hCost: calculateHCost(startCoordinates, destinationCoordinates)  
-  };
-  startPoint["fCost"] = calculateFCost(startPoint);
-  openList.push(startPoint);
+//   var movements = {x: 0, y: 1, cost: 10, direction: "north"
+//                   ,x: 1, y: 1, cost: 14}, direction: "northEast"
+//                   ,x: 1, y: 0, cost: 10}, direction: "east"    
+//                   ,x: 1, y: -1, cost: 14, direction: "southEast"
+//                   ,x: 0, y: -1, cost: 10}, direction: "south"   
+//                   ,x: -1, y: -1, cost: 14}, direction: "southWest" 
+//                   ,x: -1, y: 0, cost: 10}, direction: "west"    
+//                   ,x: -1, y: 1, cost: 14, direction: "northWest"
+//   };
+//   var openList = [];
+//   var closedList = [];
+//   var startPoint = {id: "0"
+//                    ,parent: "0"
+//                    ,x: startCoordinates["x"]
+//                    ,y: startCoordinates["y"] 
+//                    ,gCost: 0
+//                    ,hCost: calculateHCost(startCoordinates, destinationCoordinates)  
+//   };
+//   startPoint["fCost"] = calculateFCost(startPoint);
+//   openList.push(startPoint);
 
-  // LOOPING MAIN OPERATION OF THE A STAR SEARCH
-  // while !(nextSquareWIthLowestFCost.fCost == destinationCoordinates) {
-  // var nextSquareWithLowestFCost = findPointWithLowestFCost(openList);  
-  //   closedList.push(nextSquareWithLowestFCost)  // move lowest fcost to the closed list
-  //   remove nextSquareWIthLoestFCost from the openList
-  return 0;
-}
+  // loop
+  // var nextToExplore = nextfindPointWithLowestFCost(openList);
+  // move nextToExplore it to the closedList 
+  // remove nextToExplore from the open list
+  // for each adjacent square to the nextToExplore 
+  //   if not on the openlist, add it with nextToExplore as the parent, record f,g,h costs of the adjacent squares
+  //   else if its already on the openlist check to see if path to this square has a better G cost
+  //     if it is better
+  //        change the parent of this square to the current square - recalcualte g and f costs of that square
+  // stop if you find the destination square or the open list is empty
+
+  // calculate the path by going from the closed list - then following the parents backwards.
+ 
+// }
+
+
+
+

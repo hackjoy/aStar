@@ -1,13 +1,20 @@
 describe("A* Search:", function() {
 
     describe("Calculating individual search costs", function() {
+ 
+        var currentCoordinates, destinationCoordinates, coordinates1, coordinates2, coordinates3;
+
+        beforeEach(function() {
+            currentCoordinates = {x: 3, y: 1};
+            destinationCoordinates = {x: 5, y: 1};
+            coordinates1 = {x: 1, y: 1, fCost: 30, gCost: 0, hCost: 30, id: 1, parent: 1};
+            coordinates2 = {x: 2, y: 1, fCost: 30, gCost: 10, hCost: 20, id: 2, parent: 1};
+            coordinates3 = {x: 2, y: 1, fCost: 20, gCost: 20, hCost: 0, id: 3, parent: 2};
+        });
 
         // actual distance from current square to start position
         it("should calculate the G cost of the current coordinates", function() {  
-            var visitedCoordinates1 = {x: 1, y: 1, fCost: 30, gCost: 0, hCost: 30, parent: 1};
-            var visitedCoordinates2 = {x: 2, y: 1, fCost: 30, gCost: 10, hCost: 20, parent: 1};
-            var closedList = {1: visitedCoordinates1, 2: visitedCoordinates2};
-            var currentCoordinates = {x: 3, y: 1};
+            var closedList = {1: coordinates1, 2: coordinates2};
             var currentCoordinatesID = 3;
             var gCost = calculateGCost(currentCoordinates, currentCoordinatesID, closedList);
             expect(gCost).toEqual(20);   
@@ -15,26 +22,21 @@ describe("A* Search:", function() {
 
         // estimated distance from current square to destination
         it("should calculate the H cost of the current coordinates", function() {  
-            var currentCoordinates = {x: 3, y: 1};
-            var destinationCoordinates = {x: 5, y: 1};
             var gCost = calculateHCost(currentCoordinates, destinationCoordinates);    
             expect(gCost).toEqual(20);   
         });
 
         // sum of G and H costs
         it("should calculate the F cost of the current coordinates", function() {  
-            var currentCoordinates = {id: 1, parent: 1, x: 1, y: 1, gCost: 20, hCost: 30};
-            var fCost = calculateFCost(currentCoordinates);    
-            expect(fCost).toEqual(50);   
+            delete coordinates1.fCost
+            var fCost = calculateFCost(coordinates1);    
+            expect(fCost).toEqual(30);   
         });
 
         it("should find the coordinates in the open list with the lowest F Cost", function() {  
-            var visitedCoordinates1 = {x: 1, y: 1, fCost: 30, gCost: 0, hCost: 30, parent: 1};
-            var visitedCoordinates2 = {x: 2, y: 1, fCost: 30, gCost: 10, hCost: 20, parent: 1};
-            var visitedCoordinates3 = {x: 2, y: 1, fCost: 20, gCost: 10, hCost: 20, parent: 1};
-            var openList = [visitedCoordinates1, visitedCoordinates2, visitedCoordinates3]
+            var openList = [coordinates1, coordinates2, coordinates3]
             var lowestFCost = findPointWithLowestFCost(openList);
-            expect(lowestFCost).toEqual(visitedCoordinates3);   
+            expect(lowestFCost).toEqual(coordinates3);   
         });
     });
 

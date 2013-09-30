@@ -1,42 +1,51 @@
 // Helper methods
 function forEach(array, action) {  
-  for (var i = 0; i < array.length; i++) {
-   action(array[i]);
-  }
+    for (var i = 0; i < array.length; i++) {
+        action(array[i]);
+    }
 } 
 
 function calculateGCost(currentCoordinates, currentCoordinatesID, closedList) {
-  var previousGCost = closedList[((currentCoordinatesID) - 1)].gCost
-  var currentMovementCost = 10
-  return previousGCost + currentMovementCost;
+    var previousGCost = closedList[((currentCoordinatesID) - 1)].gCost
+    var currentMovementCost = 10
+    return previousGCost + currentMovementCost;
 }   
 
 // calculates estimated distance to the destination co-ordinates from current co-ordinates in absolute terms, ignoring diagonal moves and obstacles
 function calculateHCost(currentCoordinates, destinationCoordinates) {
-  return (Math.abs(destinationCoordinates["x"] - currentCoordinates["x"]) * 10) + (Math.abs(destinationCoordinates["y"] - currentCoordinates["y"]) * 10)
+    return (Math.abs(destinationCoordinates["x"] - currentCoordinates["x"]) * 10) + (Math.abs(destinationCoordinates["y"] - currentCoordinates["y"]) * 10)
 }
 
 function calculateFCost(currentCoordinates) {
-  return (currentCoordinates["hCost"] + currentCoordinates["gCost"]);
+    return (currentCoordinates.hCost + currentCoordinates.gCost);
 }
 
 // returns {point} from the [openList] with the lowest fCost 
 function findPointWithLowestFCost(openList) {
-  var pointWithLowestFCost = undefined
-  forEach(openList, function (element) {
-    if (pointWithLowestFCost == undefined) {
-      pointWithLowestFCost = element; 
-    }
-    else if (element["fCost"] < pointWithLowestFCost["fCost"]) {
-      pointWithLowestFCost = element;
-    }
-  });
-  return pointWithLowestFCost;    
+    var pointWithLowestFCost = undefined
+    forEach(openList, function (element) {
+        if (pointWithLowestFCost == undefined) {
+            pointWithLowestFCost = element; 
+        }
+        else if (element.fCost < pointWithLowestFCost.fCost) {
+            pointWithLowestFCost = element;
+        }
+    });
+    return pointWithLowestFCost;    
 } 
 
-// function validateCoordinates(coordinates) {
-//   // check that newCoordinate is within bounds of planet and is not a wall
-// }
+function validateCoordinates(coordinates, worldData) {
+    var coordinatesValid = true
+    if (coordinates["x"] > worldData["xBoundary"] || coordinates["y"] > worldData["yBoundary"]) {
+        coordinatesValid = false;  
+    }
+    forEach(worldData["walls"], function (element) {
+        if (coordinates["x"] == element["x"] && coordinates["y"] == element["y"]) {
+            coordinatesValid = false;
+        }
+    });  
+    return coordinatesValid;
+}
 
 // accepts a world data hash, start coordinates and destination coordinates hash
 // function aStarSearch(worldData, startCoordinates, destinationCoordinates) {

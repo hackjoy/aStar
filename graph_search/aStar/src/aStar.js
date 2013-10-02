@@ -1,19 +1,19 @@
 // Helper methods
-function forEach(array, action) {  
+function forEach(array, action) {
     for (var i = 0; i < array.length; i++) {
         action(array[i]);
     }
-} 
+}
 
 function calculateGCost(currentCoordinates, currentCoordinatesID, closedList) {
-    var previousGCost = closedList[((currentCoordinatesID) - 1)].gCost
-    var currentMovementCost = 10
+    var previousGCost = closedList[((currentCoordinatesID) - 1)].gCost;
+    var currentMovementCost = 10;
     return previousGCost + currentMovementCost;
-}   
+}
 
 // calculates estimated distance to the destination co-ordinates from current co-ordinates in absolute terms, ignoring diagonal moves and obstacles
 function calculateHCost(currentCoordinates, destinationCoordinates) {
-    return (Math.abs(destinationCoordinates["x"] - currentCoordinates["x"]) * 10) + (Math.abs(destinationCoordinates["y"] - currentCoordinates["y"]) * 10)
+    return (Math.abs(destinationCoordinates["x"] - currentCoordinates["x"]) * 10) + (Math.abs(destinationCoordinates["y"] - currentCoordinates["y"]) * 10);
 }
 
 function calculateFCost(currentCoordinates) {
@@ -22,42 +22,56 @@ function calculateFCost(currentCoordinates) {
 
 // returns {point} from the [openList] with the lowest fCost 
 function findPointWithLowestFCost(openList) {
-    var pointWithLowestFCost = undefined
+    var pointWithLowestFCost = null;
     forEach(openList, function (element) {
-        if (pointWithLowestFCost == undefined) {
-            pointWithLowestFCost = element; 
+        if (pointWithLowestFCost === null) {
+            pointWithLowestFCost = element;
         }
         else if (element.fCost < pointWithLowestFCost.fCost) {
             pointWithLowestFCost = element;
         }
     });
-    return pointWithLowestFCost;    
-} 
+    return pointWithLowestFCost;
+}
 
+// receives an array of coordinates hash data [{coordinates1}, {coordinates2}, {...} ]
+// returns true if a coordinate is within the bounds of the world and is not the coordinate of a wall
 function validateCoordinates(coordinates, worldData) {
-    var coordinatesValid = true
+    var coordinatesValid = true;
     if (coordinates["x"] > worldData["xBoundary"] || coordinates["y"] > worldData["yBoundary"]) {
-        coordinatesValid = false;  
+        coordinatesValid = false;
     }
     forEach(worldData["walls"], function (element) {
         if (coordinates["x"] == element["x"] && coordinates["y"] == element["y"]) {
             coordinatesValid = false;
         }
-    });  
+    });
     return coordinatesValid;
 }
 
-// accepts a world data hash, start coordinates and destination coordinates hash
-// function aStarSearch(worldData, startCoordinates, destinationCoordinates) {
+function generateAdjacentCoordinates(currentCoordinates, worldData) {
+    var validMovements = [];
+    var movements = [{x: 0, y: 1, cost: 10, direction: "north"},
+                     {x: 1, y: 1, cost: 14, direction: "northEast"},
+                     {x: 1, y: 0, cost: 10, direction: "east"},
+                     {x: 1, y: -1, cost: 14, direction: "southEast"},
+                     {x: 0, y: -1, cost: 10, direction: "south"},
+                     {x: -1, y: -1, cost: 14, direction: "southWest"},
+                     {x: -1, y: 0, cost: 10, direction: "west"},
+                     {x: -1, y: 1, cost: 14, direction: "northWest"}];
+    forEach(movements, function (element) {
+        element["x"] += currentCoordinates["x"];
+        element["y"] += currentCoordinates["y"];
+        if (validateCoordinates(element, worldData) === true) {
+            validMovements.push(element);
+        }
+    });
+    return validMovements;
+}
 
-//   var movements = {x: 0, y: 1, cost: 10, direction: "north"
-//                   ,x: 1, y: 1, cost: 14}, direction: "northEast"
-//                   ,x: 1, y: 0, cost: 10}, direction: "east"    
-//                   ,x: 1, y: -1, cost: 14, direction: "southEast"
-//                   ,x: 0, y: -1, cost: 10}, direction: "south"   
-//                   ,x: -1, y: -1, cost: 14}, direction: "southWest" 
-//                   ,x: -1, y: 0, cost: 10}, direction: "west"    
-//                   ,x: -1, y: 1, cost: 14, direction: "northWest"
+
+
+
 //   };
 //   var openList = [];
 //   var closedList = [];

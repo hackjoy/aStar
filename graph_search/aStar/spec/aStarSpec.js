@@ -19,6 +19,9 @@ describe("aStar search", function() {
     describe("costs", function() {
 
         it("should calculate the fCost given ", function() {
+            point = {id: 0, xAxis: 1, yAxis: 1, parentSquare: 0, gCost: 10, hCost: 10};
+            fCost = aStar.calculateFCost(point);
+            expect(fCost).toEqual(20);
         });
 
         it('should calculate the gCost given a currentLocation and adjacentCoordinate', function () {

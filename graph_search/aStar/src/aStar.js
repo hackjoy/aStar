@@ -1,6 +1,6 @@
 _ = require('underscore');
 
-// module.exports.calculateGCost = function (currentLocation, currentLocation, closedList) {
+// exports.calculateGCost = function (currentLocation, currentLocation, closedList) {
 //     var previousGCost = closedList[((currentLocation) - 1)].gCost;
 //     var currentMovementCost = 10;
 //     return previousGCost + currentMovementCost;
@@ -8,12 +8,12 @@ _ = require('underscore');
 
 // calculates estimated distance to the destination co-ordinates from current co-ordinates in absolute terms,
 // ignoring diagonal moves and obstacles
-module.exports.calculateHCost = function (currentLocation, destination) {
+exports.calculateHCost = function (currentLocation, destination) {
     return (Math.abs(destination["x"] - currentLocation["x"]) * 10) +
            (Math.abs(destination["y"] - currentLocation["y"]) * 10);
 };
 
-module.exports.getAdjacentCoordinates = function (currentLocation) {
+exports.getAdjacentCoordinates = function (currentLocation) {
     adjacentMovements = [{x: -1, y: 1}, {x: 0, y: 1}, {x: 1, y: 1},
                          {x: -1, y: 0}, {x: 1, y: 0},
                          {x: -1, y: -1}, {x: 0, y: -1}, {x: 1, y: -1}];
@@ -25,12 +25,12 @@ module.exports.getAdjacentCoordinates = function (currentLocation) {
     return adjacentCoordinates;
 };
 
-// module.exports.calculateFCost = function (currentLocation) {
+// exports.calculateFCost = function (currentLocation) {
 //     return (currentLocation.hCost + currentLocation.gCost);
 // };
 
 // // returns {point} from the [openList] with the lowest fCost
-// module.exports.findPointWithLowestFCost = function (openList) {
+// exports.findPointWithLowestFCost = function (openList) {
 //     var pointWithLowestFCost = null;
 //     forEach(openList, function (element) {
 //         if (pointWithLowestFCost === null) {
@@ -45,7 +45,7 @@ module.exports.getAdjacentCoordinates = function (currentLocation) {
 
 // // receives an array of coordinates hash data [{coordinates1}, {coordinates2}, {...} ]
 // // returns true if a coordinate is within the bounds of the world and is not the coordinate of a wall
-// module.exports.validateCoordinates = function (coordinates, worldData) {
+// exports.validateCoordinates = function (coordinates, worldData) {
 //     var coordinatesValid = true;
 //     if (coordinates["x"] > worldData["xBoundary"] || coordinates["y"] > worldData["yBoundary"]) {
 //         coordinatesValid = false;
@@ -58,7 +58,7 @@ module.exports.getAdjacentCoordinates = function (currentLocation) {
 //     return coordinatesValid;
 // };
 
-// module.exports.generateAdjacentCoordinates = function (currentLocation, worldData) {
+// exports.generateAdjacentCoordinates = function (currentLocation, worldData) {
 //     var validMovements = [];
 //     var movements = [{x: 0, y: 1, cost: 10, direction: "north"},
 //                      {x: 1, y: 1, cost: 14, direction: "northEast"},

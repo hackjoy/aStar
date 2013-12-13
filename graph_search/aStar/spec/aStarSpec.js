@@ -1,25 +1,39 @@
-var _ = require('underscore');
+require('./specHelper');
 
 var aStar = require('../src/aStar');
 
 describe("aStar search", function() {
 
-    it('should generate adjacent coordinates given a currentLocation', function () {
-        var currentLocation = {x: 2, y: 1};
-        var adjacentCoordinates = aStar.getAdjacentCoordinates(currentLocation);
-        var expectedAdjacentCoordinates = [{x: 1, y: 2}, {x: 2, y: 2}, {x: 3, y: 2},
-                                           {x: 1, y: 1}, {x: 3, y: 1},
-                                           {x: 1, y: 0}, {x: 2, y: 0}, {x: 3, y: 0}];
-        expect(adjacentCoordinates).toEqual(expectedAdjacentCoordinates);
+    describe("generating coordinates", function() {
+
+        it('should generate adjacent coordinates given a currentLocation', function () {
+            var currentLocation = {x: 2, y: 1};
+            var adjacentCoordinates = aStar.getAdjacentCoordinates(currentLocation);
+            var expectedAdjacentCoordinates = [{x: 1, y: 2}, {x: 2, y: 2}, {x: 3, y: 2},
+                                               {x: 1, y: 1}, {x: 3, y: 1},
+                                               {x: 1, y: 0}, {x: 2, y: 0}, {x: 3, y: 0}];
+            expect(adjacentCoordinates).toEqual(expectedAdjacentCoordinates);
+        });
     });
 
+    describe("calculating costs", function() {
 
-    it("should calculate the hCost given a currentLocation and destination", function() {
-        var currentLocation = {x: 1, y: 2};
-        var destination = {x: 4, y: 2};
-        var hCost = aStar.calculateHCost(currentLocation, destination);
-        expect(hCost).toEqual(30);
+        it('should calculate the gCost given a currentLocation and adjacentCoordinate', function () {
+            var currentLocation = {x: 2, y: 1};
+            var adjacentCoordinates = aStar.getAdjacentCoordinates(currentLocation);
+        });
+
+        it("should calculate the hCost given a currentLocation and destination", function() {
+            var currentLocation = {x: 1, y: 2};
+            var destination = {x: 4, y: 2};
+            var hCost = aStar.calculateHCost(currentLocation, destination);
+            expect(hCost).toEqual(30);
+        });
+
+        it("should calculate the fCost given ", function() {
+        });
     });
+});
 
     // var currentCoordinates, destinationCoordinates, coordinates1, coordinates2, coordinates3;
 
@@ -49,7 +63,7 @@ describe("aStar search", function() {
     //     var fCost = calculateFCost(coordinates1);
     //     expect(fCost).toEqual(30);
     // });
-});
+
 
 // describe("Determining the next coordinates to explore", function() {
 

@@ -7,30 +7,38 @@ describe("aStar search", function() {
     describe("generating coordinates", function() {
 
         it('should generate adjacent coordinates given a currentLocation', function () {
-            var currentLocation = {x: 2, y: 1};
+            var currentLocation = {xAxis: 2, yAxis: 1};
             var adjacentCoordinates = aStar.getAdjacentCoordinates(currentLocation);
-            var expectedAdjacentCoordinates = [{x: 1, y: 2}, {x: 2, y: 2}, {x: 3, y: 2},
-                                               {x: 1, y: 1}, {x: 3, y: 1},
-                                               {x: 1, y: 0}, {x: 2, y: 0}, {x: 3, y: 0}];
+            var expectedAdjacentCoordinates = [{xAxis: 1, yAxis: 2}, {xAxis: 2, yAxis: 2}, {xAxis: 3, yAxis: 2},
+                                               {xAxis: 1, yAxis: 1}, {xAxis: 3, yAxis: 1},
+                                               {xAxis: 1, yAxis: 0}, {xAxis: 2, yAxis: 0}, {xAxis: 3, yAxis: 0}];
             expect(adjacentCoordinates).toEqual(expectedAdjacentCoordinates);
         });
     });
 
-    describe("calculating costs", function() {
+    describe("costs", function() {
 
         it("should calculate the fCost given ", function() {
         });
 
         it('should calculate the gCost given a currentLocation and adjacentCoordinate', function () {
-            var currentLocation = {x: 2, y: 1};
+            var currentLocation = {xAxis: 2, yAxis: 1};
             var adjacentCoordinates = aStar.getAdjacentCoordinates(currentLocation);
         });
 
         it("should calculate the hCost given a currentLocation and destination", function() {
-            var currentLocation = {x: 1, y: 2};
-            var destination = {x: 4, y: 2};
+            var currentLocation = {xAxis: 1, yAxis: 2};
+            var destination = {xAxis: 4, yAxis: 2};
             var hCost = aStar.calculateHCost(currentLocation, destination);
             expect(hCost).toEqual(30);
+        });
+
+        it('should find the lowest f cost in the open list', function () {
+            a1 = {id: 0, xAxis: 1, yAxis: 1, parentSquare: 0, fCost: 20, gCost: 0, hCost: 0};
+            a2 = {id: 1, xAxis: 1, yAxis: 1, parentSquare: 0, fCost: 0, gCost: 0, hCost: 0};
+            a3 = {id: 2, xAxis: 1, yAxis: 1, parentSquare: 0, fCost: 40, gCost: 0, hCost: 0};
+            openList = [a1, a2, a3];
+            expect(aStar.findPointWithLowestFCost(openList)).toEqual(a2);
         });
     });
 

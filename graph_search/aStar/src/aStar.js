@@ -1,6 +1,6 @@
 _ = require('underscore');
 
-// generates adjacent x,y coordinates. Passed a current location e.g. {x: 2 y: 4}, returns an array of 8 x,y coordinate objects
+// receives a current location {xAxis: 3, yAxis: 3} and returns 8 adjacent coordinates [{xAxis: 2, yAxis: 3}, {xAxis: 3, yAxis: 2} ... ]
 exports.getAdjacentCoordinates = function (currentLocation) {
     adjacentMovements = [{xAxis: -1, yAxis: 1}, {xAxis: 0, yAxis: 1}, {xAxis: 1, yAxis: 1},
                          {xAxis: -1, yAxis: 0}, {xAxis: 1, yAxis: 0},
@@ -14,10 +14,10 @@ exports.getAdjacentCoordinates = function (currentLocation) {
 };
 
 // calculates the movement cost from the start to the current location based on the path generated to get there.
-exports.calculateGCost = function (currentLocation, currentLocation, closedList) {
-    var previousGCost = closedList[((currentLocation) - 1)].gCost;
-    var currentMovementCost = 10;
-    return previousGCost + currentMovementCost;
+exports.calculateGCost = function (currentLocation, closedList) {
+    // var previousGCost = closedList[((currentLocation) - 1)].gCost;
+    // var currentMovementCost = 10;
+    // return previousGCost + currentMovementCost;
 };
 
 // calculates estimated distance to the destination co-ordinates from current co-ordinates in absolute terms,
@@ -34,7 +34,7 @@ exports.calculateFCost = function (currentLocation) {
 // returns {point} from the [openList] with the lowest fCost
 exports.findPointWithLowestFCost = function (openList) {
     var pointWithLowestFCost = null;
-    forEach(openList, function (element) {
+    _.map(openList, function (element) {
         if (pointWithLowestFCost === null) {
             pointWithLowestFCost = element;
         }
@@ -45,8 +45,8 @@ exports.findPointWithLowestFCost = function (openList) {
     return pointWithLowestFCost;
 };
 
-// // receives an array of coordinates hash data [{coordinates1}, {coordinates2}, {...} ]
-// // returns true if a coordinate is within the bounds of the world and is not the coordinate of a wall
+// receives an array of coordinates hash data [{coordinates1}, {coordinates2}, {...} ]
+// returns true if a coordinate is within the bounds of the world and is not the coordinate of a wall
 exports.validateCoordinates = function (coordinates, worldData) {
     var coordinatesValid = true;
     if (coordinates.xAxis > worldData.xBoundary || coordinates.yAxis > worldData.yBoundary) {

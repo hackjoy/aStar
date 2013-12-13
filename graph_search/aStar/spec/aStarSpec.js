@@ -33,6 +33,12 @@ describe("aStar search", function() {
             expect(hCost).toEqual(30);
         });
     });
+
+    describe("testing the full implementation", function() {
+        it("should return the shortest path", function() {
+            // aStar.searchFor(destination, startingPoint, environment);
+        });
+    });
 });
 
     // var currentCoordinates, destinationCoordinates, coordinates1, coordinates2, coordinates3;

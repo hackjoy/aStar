@@ -13,7 +13,7 @@ exports.getAdjacentCoordinates = function (currentLocation) {
     return adjacentCoordinates;
 };
 
-
+// calculates the movement cost from the start to the current location based on the path generated to get there.
 // exports.calculateGCost = function (currentLocation, currentLocation, closedList) {
 //     var previousGCost = closedList[((currentLocation) - 1)].gCost;
 //     var currentMovementCost = 10;
@@ -27,10 +27,10 @@ exports.calculateHCost = function (currentLocation, destination) {
            (Math.abs(destination["y"] - currentLocation["y"]) * 10);
 };
 
-
 // exports.calculateFCost = function (currentLocation) {
 //     return (currentLocation.hCost + currentLocation.gCost);
 // };
+
 
 // // returns {point} from the [openList] with the lowest fCost
 // exports.findPointWithLowestFCost = function (openList) {
@@ -61,28 +61,24 @@ exports.calculateHCost = function (currentLocation, destination) {
 //     return coordinatesValid;
 // };
 
-// exports.generateAdjacentCoordinates = function (currentLocation, worldData) {
-//     var validMovements = [];
-//     var movements = [{x: 0, y: 1, cost: 10, direction: "north"},
-//                      {x: 1, y: 1, cost: 14, direction: "northEast"},
-//                      {x: 1, y: 0, cost: 10, direction: "east"},
-//                      {x: 1, y: -1, cost: 14, direction: "southEast"},
-//                      {x: 0, y: -1, cost: 10, direction: "south"},
-//                      {x: -1, y: -1, cost: 14, direction: "southWest"},
-//                      {x: -1, y: 0, cost: 10, direction: "west"},
-//                      {x: -1, y: 1, cost: 14, direction: "northWest"}];
-//     forEach(movements, function (element) {
-//         element["x"] += currentLocation["x"];
-//         element["y"] += currentLocation["y"];
-//         if (validateCoordinates(element, worldData) === true) {
-//             validMovements.push(element);
-//         }
-//     });
-//     return validMovements;
-// };
 
+exports.searchFor = function (destination, startLocation, environment) {
+  var openList = [];
+  var closedList = [];
+  var idCounter = 0;
 
+  // prepare the startLocation as the first square in openList
+  start = {id: idCounter, x: startLocation.x, y: startLocation.y, parentSquare: idCounter, fCost: 0, gCost: 0, hCost: 0};
+  idCounter += 1;
+  openList += start;
 
+  // add starting point to open list of squares to be considered.
+  // choose square from the open list with lowest fCost. Remove from open list and add to closed list
+  // generate legal adjacent co-ordinates from the chosen square and add them to the openlist with the chosen square as parentSquare, costs
+
+  // repeat
+
+};
 
 //   };
 //   var openList = [];

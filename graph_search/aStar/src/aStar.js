@@ -1,5 +1,19 @@
 _ = require('underscore');
 
+// generates adjacent x,y coordinates. Passed a current location e.g. {x: 2 y: 4}, returns an array of 8 x,y coordinate objects
+exports.getAdjacentCoordinates = function (currentLocation) {
+    adjacentMovements = [{x: -1, y: 1}, {x: 0, y: 1}, {x: 1, y: 1},
+                         {x: -1, y: 0}, {x: 1, y: 0},
+                         {x: -1, y: -1}, {x: 0, y: -1}, {x: 1, y: -1}];
+    adjacentCoordinates = _.map(adjacentMovements, function (movement) {
+        movement.x += this.x;
+        movement.y += this.y;
+        return movement;
+    }, currentLocation);
+    return adjacentCoordinates;
+};
+
+
 // exports.calculateGCost = function (currentLocation, currentLocation, closedList) {
 //     var previousGCost = closedList[((currentLocation) - 1)].gCost;
 //     var currentMovementCost = 10;
@@ -13,17 +27,6 @@ exports.calculateHCost = function (currentLocation, destination) {
            (Math.abs(destination["y"] - currentLocation["y"]) * 10);
 };
 
-exports.getAdjacentCoordinates = function (currentLocation) {
-    adjacentMovements = [{x: -1, y: 1}, {x: 0, y: 1}, {x: 1, y: 1},
-                         {x: -1, y: 0}, {x: 1, y: 0},
-                         {x: -1, y: -1}, {x: 0, y: -1}, {x: 1, y: -1}];
-    adjacentCoordinates = _.map(adjacentMovements, function (movement) {
-        movement.x += this.x;
-        movement.y += this.y;
-        return movement;
-    }, currentLocation);
-    return adjacentCoordinates;
-};
 
 // exports.calculateFCost = function (currentLocation) {
 //     return (currentLocation.hCost + currentLocation.gCost);

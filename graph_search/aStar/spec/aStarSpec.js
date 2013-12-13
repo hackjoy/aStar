@@ -18,6 +18,9 @@ describe("aStar search", function() {
 
     describe("calculating costs", function() {
 
+        it("should calculate the fCost given ", function() {
+        });
+
         it('should calculate the gCost given a currentLocation and adjacentCoordinate', function () {
             var currentLocation = {x: 2, y: 1};
             var adjacentCoordinates = aStar.getAdjacentCoordinates(currentLocation);
@@ -28,9 +31,6 @@ describe("aStar search", function() {
             var destination = {x: 4, y: 2};
             var hCost = aStar.calculateHCost(currentLocation, destination);
             expect(hCost).toEqual(30);
-        });
-
-        it("should calculate the fCost given ", function() {
         });
     });
 });

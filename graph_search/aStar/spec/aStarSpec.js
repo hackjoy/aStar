@@ -30,7 +30,7 @@ describe("aStar search", function() {
             expect(validCoordinates).toEqual(expectedValidCoordinates);
         });
 
-        it('should return all coordinates when all are valid - except for walls', function () {
+        it('should not return coordinates that are walls', function () {
             var adjacentCoordinates =      [{xAxis: 1, yAxis: 2, cost: 14}, {xAxis: 2, yAxis: 2, cost: 10}, {xAxis: 3, yAxis: 2, cost: 14},
                                             {xAxis: 1, yAxis: 1, cost: 10},                                 {xAxis: 3, yAxis: 1, cost: 10},
                                             {xAxis: 1, yAxis: 0, cost: 14}, {xAxis: 2, yAxis: 0, cost: 10}, {xAxis: 3, yAxis: 0, cost: 14}];
@@ -43,7 +43,17 @@ describe("aStar search", function() {
             expect(validCoordinates).toEqual(expectedValidCoordinates);
         });
 
-
+        it('should not return coordinates that are outside the worldSize', function () {
+            var adjacentCoordinates =      [{xAxis: 1, yAxis: 2, cost: 14}, {xAxis: 2, yAxis: 2, cost: 10}, {xAxis: 3, yAxis: 2, cost: 14},
+                                            {xAxis: 1, yAxis: 1, cost: 10},                                 {xAxis: 3, yAxis: 1, cost: 10},
+                                            {xAxis: 1, yAxis: 0, cost: 14}, {xAxis: 2, yAxis: 0, cost: 10}, {xAxis: 3, yAxis: 0, cost: 14}];
+            var expectedValidCoordinates = [{xAxis: 1, yAxis: 2, cost: 14}, {xAxis: 2, yAxis: 2, cost: 10},
+                                            {xAxis: 1, yAxis: 1, cost: 10},
+                                            {xAxis: 1, yAxis: 0, cost: 14}, {xAxis: 2, yAxis: 0, cost: 10}];
+            var environment = {walls: [{}], worldSize: {xAxis: 2, yAxis: 2}};
+            var validCoordinates = aStar.validateCoordinates(adjacentCoordinates, environment);
+            expect(validCoordinates).toEqual(expectedValidCoordinates);
+        });
     });
 
     describe("calculating costs", function() {

@@ -1,10 +1,11 @@
 Algorithms
 ================
 
-An implementation of well known computer science algorithms in various languages.
+Notable algorithms from computer science implemented in various languages.
 
 http://en.wikipedia.org/wiki/List_of_algorithms
 
 
-###Graph Search
----A* Search (implemented in JavaScript)
+###/graph_search
+
++ A* Search (implemented in JavaScript)

@@ -1,5 +1,7 @@
 ### A* search
 
+Based on the excellent explanation here: http://www.policyalmanac.org/games/aStarTutorial.htm
+
 Run the following:
 
 $ npm install

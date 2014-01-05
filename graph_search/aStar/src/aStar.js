@@ -2,9 +2,9 @@ _ = require('underscore');
 
 // receives a current location {xAxis: 3, yAxis: 3} and returns 8 adjacent coordinates [{xAxis: 2, yAxis: 3}, {xAxis: 3, yAxis: 2} ... ]
 exports.getAdjacentCoordinates = function (currentLocation) {
-    adjacentMovements = [{xAxis: -1, yAxis: 1}, {xAxis: 0, yAxis: 1}, {xAxis: 1, yAxis: 1},
-                         {xAxis: -1, yAxis: 0}, {xAxis: 1, yAxis: 0},
-                         {xAxis: -1, yAxis: -1}, {xAxis: 0, yAxis: -1}, {xAxis: 1, yAxis: -1}];
+    adjacentMovements = [{xAxis: -1, yAxis: 1, cost: 14},  {xAxis: 0, yAxis: 1, cost: 10},  {xAxis: 1, yAxis: 1, cost: 14},
+                         {xAxis: -1, yAxis: 0, cost: 10},                                   {xAxis: 1, yAxis: 0, cost: 10},
+                         {xAxis: -1, yAxis: -1, cost: 14}, {xAxis: 0, yAxis: -1, cost: 10}, {xAxis: 1, yAxis: -1, cost: 14}];
     adjacentCoordinates = _.map(adjacentMovements, function (movement) {
         movement.xAxis += this.xAxis;
         movement.yAxis += this.yAxis;
@@ -13,11 +13,15 @@ exports.getAdjacentCoordinates = function (currentLocation) {
     return adjacentCoordinates;
 };
 
-// calculates the movement cost from the start to the current location based on the path generated to get there.
-exports.calculateGCost = function (currentLocation, closedList) {
-    // var previousGCost = closedList[((currentLocation) - 1)].gCost;
-    // var currentMovementCost = 10;
-    // return previousGCost + currentMovementCost;
+// calculates the movement cost from the start to the current location based on the path generated to get there. gCost = gCost of parent + current move cost
+exports.calculateGCost = function (currentLocation, proposedLocation, closedList) {
+    var gCost;
+    _.map(closedList, function (point) {
+        if (point.id == proposedLocation.id - 1) {
+            gCost = point.gCost + proposedLocation.cost;
+        }
+    })
+    return gCost;
 };
 
 // calculates estimated distance to the destination co-ordinates from current co-ordinates in absolute terms,
@@ -63,12 +67,14 @@ exports.validateCoordinates = function (coordinates, worldData) {
 exports.searchFor = function (destination, startLocation, environment) {
     var openList = [];
     var closedList = [];
-    var idCounter = 0;
+    var idCounter = 1;
 
     // prepare the startLocation as the first square in openList
-    start = {id: idCounter, xAxis: startLocation.xAxis, yAxis: startLocation.yAxis, parentSquare: idCounter, fCost: 0, gCost: 0, hCost: 0};
+    start = {id: idCounter, xAxis: startLocation.xAxis, yAxis: startLocation.yAxis, parentSquare: 0, gCost: 0};
+    start.hCost = calculateHCost(start, destination);
+    start.fCost = calculateFCost(start);
     idCounter += 1;
-    openList += start;
+    openList.push(start);
 
     // loop
     // var nextToExplore = nextfindPointWithLowestFCost(openList);

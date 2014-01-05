@@ -7,4 +7,4 @@ http://en.wikipedia.org/wiki/List_of_algorithms
 
 
 ###Graph Search
----A* Search (implemented in JS)
+---A* Search (implemented in JavaScript)

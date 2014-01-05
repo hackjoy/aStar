@@ -1,5 +1,37 @@
 _ = require('underscore');
 
+exports.searchFor = function (destination, startLocation, environment) {
+    var openList = [];
+    var closedList = [];
+
+    // prepare the startLocation as the first square in openList
+    start = {id: 1, xAxis: startLocation.xAxis, yAxis: startLocation.yAxis, parentSquare: 0, gCost: 0};
+    start.hCost = exports.calculateHCost(start, destination);
+    start.fCost = exports.calculateFCost(start);
+    openList.push(start);
+
+    var idCounter = 2;
+    var currentLocation = start;
+    while (true) {
+        if (currentLocation.xAxis == destination.xAxis && currentLocation.yAxis == destination.yAxis) {
+            break;
+        } else {
+            // var nextToExplore = nextfindPointWithLowestFCost(openList);
+            // add nextToExplore to the closedList
+            // remove nextToExplore from the open list
+            // get adjacent squares to nextToExplore
+            // for each adjacent square
+            //   if not on the openlist
+            //      add it with nextToExplore as the parent, record f,g,h costs of the adjacent square, add id
+            //   else
+            //      check to see if path to this square has a better G cost than the one currently on the openList
+            //      if it is better
+            //        change the parent of this square to the current square - recalculate g and f costs of that square
+        }
+    }
+    // return the shortest path
+};
+
 // receives a current location {xAxis: 3, yAxis: 3} and returns 8 adjacent coordinates [{xAxis: 2, yAxis: 3}, {xAxis: 3, yAxis: 2} ... ]
 exports.getAdjacentCoordinates = function (currentLocation) {
     adjacentMovements = [{xAxis: -1, yAxis: 1, cost: 14},  {xAxis: 0, yAxis: 1, cost: 10},  {xAxis: 1, yAxis: 1, cost: 14},
@@ -67,26 +99,3 @@ exports.findPointWithLowestFCost = function (openList) {
     return pointWithLowestFCost;
 };
 
-exports.searchFor = function (destination, startLocation, environment) {
-    var openList = [];
-    var closedList = [];
-    var idCounter = 1;
-
-    // prepare the startLocation as the first square in openList
-    start = {id: idCounter, xAxis: startLocation.xAxis, yAxis: startLocation.yAxis, parentSquare: 0, gCost: 0};
-    start.hCost = calculateHCost(start, destination);
-    start.fCost = calculateFCost(start);
-    idCounter += 1;
-    openList.push(start);
-
-    // loop
-    // var nextToExplore = nextfindPointWithLowestFCost(openList);
-    // move nextToExplore to the closedList
-    // remove nextToExplore from the open list
-    // for each adjacent square to the nextToExplore
-    //   if not on the openlist, add it with nextToExplore as the parent, record f,g,h costs of the adjacent squares, add id
-    //   else if its already on the openlist check to see if path to this square has a better G cost
-    //     if it is better
-    //        change the parent of this square to the current square - recalculate g and f costs of that square
-    // stop if you find the destination square or the open list is empty
-};

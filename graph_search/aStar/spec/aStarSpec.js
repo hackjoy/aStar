@@ -93,7 +93,10 @@ describe("aStar search", function() {
 
     describe("integration test", function() {
         it("should return the shortest path given a destination, starting point and environment", function() {
-            // aStar.search(destination, startingPoint, environment);
+            var destination = {xAxis: 7, yAxis: 3};
+            var startLocation = {xAxis: 1, yAxis: 3};
+            var environment = {walls: [{xAxis: 4, yAxis: 2}, {xAxis: 4, yAxis: 3}, {xAxis: 4, yAxis: 4}], worldSize: {xAxis: 2, yAxis: 2}};
+            aStar.searchFor(destination, startLocation, environment);
         });
     });
 });

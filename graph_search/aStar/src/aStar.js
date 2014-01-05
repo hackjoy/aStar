@@ -13,6 +13,24 @@ exports.getAdjacentCoordinates = function (currentLocation) {
     return adjacentCoordinates;
 };
 
+// receives an array of coordinate objects [{coordinates1}, {coordinates2}, {...} ] and returns new array of valid coordinates
+exports.validateCoordinates = function (adjacentCoordinates, environment) {
+    var validatedCoordinates = [];
+    _.map(adjacentCoordinates, function(coordinate) {
+        if (coordinate.xAxis <= environment.worldSize.xAxis && coordinate.yAxis <= environment.worldSize.yAxis &&
+            coordinate.xAxis >= 0 && coordinate.yAxis >= 0) {
+            _.map(environment.walls, function (wall) {
+                if (coordinate.xAxis == wall.xAxis && coordinate.yAxis == wall.yAxis) {
+                    // don't include it
+                } else {
+                    validatedCoordinates.push(coordinate);
+                }
+            });
+        }
+    });
+    return validatedCoordinates;
+};
+
 // calculates the movement cost from the start to the current location based on the path generated to get there. gCost = gCost of parent + current move cost
 exports.calculateGCost = function (currentLocation, proposedLocation, closedList) {
     var gCost;
@@ -47,21 +65,6 @@ exports.findPointWithLowestFCost = function (openList) {
         }
     });
     return pointWithLowestFCost;
-};
-
-// receives an array of coordinates hash data [{coordinates1}, {coordinates2}, {...} ]
-// returns true if a coordinate is within the bounds of the world and is not the coordinate of a wall
-exports.validateCoordinates = function (coordinates, worldData) {
-    var coordinatesValid = true;
-    if (coordinates.xAxis > worldData.xBoundary || coordinates.yAxis > worldData.yBoundary) {
-        coordinatesValid = false;
-    }
-    forEach(worldData.walls, function (element) {
-        if (coordinates.xAxis == element.xAxis && coordinates.yAxis == element.yAxis) {
-            coordinatesValid = false;
-        }
-    });
-    return coordinatesValid;
 };
 
 exports.searchFor = function (destination, startLocation, environment) {

@@ -8,4 +8,4 @@ http://en.wikipedia.org/wiki/List_of_algorithms
 
 ###/graph_search
 
-+ A* Search (implemented in JavaScript)
++ [A* Search](http://en.wikipedia.org/wiki/A*): Special case of best-first search that uses heuristics to improve speed.  Written in JavaScript.

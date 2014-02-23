@@ -74,6 +74,10 @@ createStartPoint = function (destination, initialCoordinates) {
     return startPoint
 }
 
+destinationReached = function (currentLocation, destination) {
+  return currentLocation.xAxis == destination.xAxis && currentLocation.yAxis == destination.yAxis
+}
+
 
 exports.searchFor = function (destination, startCoordinates, environment) {
     var openList = [];
@@ -85,8 +89,8 @@ exports.searchFor = function (destination, startCoordinates, environment) {
     openList.push(currentLocation);
 
     while (true) {
-        if (currentLocation.xAxis == destination.xAxis && currentLocation.yAxis == destination.yAxis) {
-            break; // we reached the destination
+        if (destinationReached(currentLocation, destination)) {
+            break;
         } else {
             var nextToExplore = currentLocation = exports.findCoordinateWithLowestFCost(openList);
             closedList.push(nextToExplore);

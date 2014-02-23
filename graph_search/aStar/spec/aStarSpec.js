@@ -82,12 +82,12 @@ describe("aStar search", function() {
             expect(hCost).toEqual(30);
         });
 
-        it('should find the lowest fCost in the openList', function () {
+        it('should find coordinate with the lowest fCost in the openList', function () {
             var a1 = {id: 0, xAxis: 1, yAxis: 1, parentSquare: 0, fCost: 20, gCost: 0, hCost: 0};
             var a2 = {id: 1, xAxis: 1, yAxis: 1, parentSquare: 0, fCost: 0, gCost: 0, hCost: 0};
             var a3 = {id: 2, xAxis: 1, yAxis: 1, parentSquare: 0, fCost: 40, gCost: 0, hCost: 0};
             openList = [a1, a2, a3];
-            expect(aStar.findPointWithLowestFCost(openList)).toEqual(a2);
+            expect(aStar.findCoordinateWithLowestFCost(openList)).toEqual(a2);
         });
     });
 
@@ -96,7 +96,9 @@ describe("aStar search", function() {
             var destination = {xAxis: 7, yAxis: 3};
             var startLocation = {xAxis: 1, yAxis: 3};
             var environment = {walls: [{xAxis: 4, yAxis: 2}, {xAxis: 4, yAxis: 3}, {xAxis: 4, yAxis: 4}], worldSize: {xAxis: 2, yAxis: 2}};
-            aStar.searchFor(destination, startLocation, environment);
+            var result = aStar.searchFor(destination, startLocation, environment);
+            var expectedResult = [];
+            expect(result).toEqual(expectedResult);
         });
     });
 });

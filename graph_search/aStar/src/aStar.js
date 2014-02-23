@@ -1,49 +1,5 @@
 _ = require('underscore');
 
-exports.searchFor = function (destination, startLocation, environment) {
-    var openList = [];
-    var closedList = [];
-    var idCounter = 2;
-    // add startLocation to the openList
-    co = {id: 1, xAxis: startLocation.xAxis, yAxis: startLocation.yAxis, parentSquare: 0, gCost: 0};
-    co.hCost = exports.calculateHCost(co, destination);
-    co.fCost = exports.calculateFCost(co);
-    openList.push(co);
-    var currentLocation = co;
-
-    while (true) {
-        if (currentLocation.xAxis == destination.xAxis && currentLocation.yAxis == destination.yAxis) {
-            break; // we reached the destination
-        } else {
-            var nextToExplore = currentLocation = exports.findPointWithLowestFCost(openList);
-            closedList.push(nextToExplore);
-            _.map(openList, function (coordinate) {
-                if (coordinate.xAxis == nextToExplore.xAxis && coordinate.yAxis == nextToExplore.yAxis) {
-                    delete openList[(openList.indexOf(coordinate))]; // remove nextToExplore from open list
-                }
-            });
-            // get the adjacent coordinates, check if each exists on the open list
-            var adjacentCoordinates = exports.validateCoordinates(exports.getAdjacentCoordinates(nextToExplore), environment);
-            _.map(adjacentCoordinates, function (adjacentCoordinate) {
-                _.map(openList, function (openListCoordinate) {
-                    if (openListCoordinate.xAxis == nextToExplore.xAxis && openListCoordinate.yAxis == nextToExplore.yAxis) {
-                        // check to see if path to this square has a better G cost than the one currently on the openList
-                        //      if it is better
-                        //        change the parent of this square to the current square - recalculate g and f costs of that square
-                    } else {
-                        // add adjacentCoordinate to openList with nextToExplore as the parent
-                        co = {id: idCounter, xAxis: adjacentCoordinate.xAxis, yAxis: adjacentCoordinate.yAxis, parentSquare: nextToExplore.id, gCost: 0};
-                        co.hCost = exports.calculateHCost(co, destination);
-                        co.fCost = exports.calculateFCost(co);
-                        openList.push(co);
-                    }
-                });
-            });
-        }
-    }
-    return closedList; // shortest path
-};
-
 // receives a current location {xAxis: 3, yAxis: 3} and returns 8 adjacent coordinates [{xAxis: 2, yAxis: 3}, {xAxis: 3, yAxis: 2} ... ]
 exports.getAdjacentCoordinates = function (currentLocation) {
     adjacentMovements = [{xAxis: -1, yAxis: 1, cost: 14},  {xAxis: 0, yAxis: 1, cost: 10},  {xAxis: 1, yAxis: 1, cost: 14},
@@ -98,7 +54,7 @@ exports.calculateFCost = function (currentLocation) {
 };
 
 // returns {point} from the [openList] with the lowest fCost
-exports.findPointWithLowestFCost = function (openList) {
+exports.findCoordinateWithLowestFCost = function (openList) {
     var pointWithLowestFCost = null;
     _.map(openList, function (element) {
         if (pointWithLowestFCost === null) {
@@ -109,5 +65,55 @@ exports.findPointWithLowestFCost = function (openList) {
         }
     });
     return pointWithLowestFCost;
+};
+
+createStartPoint = function (destination, initialCoordinates) {
+    startPoint = {id: 1, xAxis: initialCoordinates.xAxis, yAxis: initialCoordinates.yAxis, parentSquare: 0, gCost: 0};
+    startPoint.hCost = exports.calculateHCost(startPoint, destination);
+    startPoint.fCost = exports.calculateFCost(startPoint);
+    return startPoint
+}
+
+
+exports.searchFor = function (destination, startCoordinates, environment) {
+    var openList = [];
+    var closedList = [];
+    var idCounter = 2;
+
+    // Add initialCoordinates to the openList
+    var currentLocation = createStartPoint(destination, startCoordinates);
+    openList.push(currentLocation);
+
+    while (true) {
+        if (currentLocation.xAxis == destination.xAxis && currentLocation.yAxis == destination.yAxis) {
+            break; // we reached the destination
+        } else {
+            var nextToExplore = currentLocation = exports.findCoordinateWithLowestFCost(openList);
+            closedList.push(nextToExplore);
+            _.map(openList, function (coordinate) {
+                if (coordinate.xAxis == nextToExplore.xAxis && coordinate.yAxis == nextToExplore.yAxis) {
+                    delete openList[(openList.indexOf(coordinate))]; // remove nextToExplore from open list
+                }
+            });
+            // get the adjacent coordinates, check if each exists on the open list
+            var adjacentCoordinates = exports.validateCoordinates(exports.getAdjacentCoordinates(nextToExplore), environment);
+            _.map(adjacentCoordinates, function (adjacentCoordinate) {
+                _.map(openList, function (openListCoordinate) {
+                    if (openListCoordinate.xAxis == nextToExplore.xAxis && openListCoordinate.yAxis == nextToExplore.yAxis) {
+                        // check to see if path to this square has a better G cost than the one currently on the openList
+                        //      if it is better
+                        //        change the parent of this square to the current square - recalculate g and f costs of that square
+                    } else {
+                        // add adjacentCoordinate to openList with nextToExplore as the parent
+                        co = {id: idCounter, xAxis: adjacentCoordinate.xAxis, yAxis: adjacentCoordinate.yAxis, parentSquare: nextToExplore.id, gCost: 0};
+                        co.hCost = exports.calculateHCost(co, destination);
+                        co.fCost = exports.calculateFCost(co);
+                        openList.push(co);
+                    }
+                });
+            });
+        }
+    }
+    return closedList; // contains the shortest path
 };
 

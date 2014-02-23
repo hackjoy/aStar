@@ -79,6 +79,14 @@ destinationReached = function (currentLocation, destination) {
 }
 
 
+removeNextToExploreFromOpenList = function (openList, nextToExplore) {
+    _.map(openList, function (coordinate) {
+        if (coordinate.xAxis == nextToExplore.xAxis && coordinate.yAxis == nextToExplore.yAxis) {
+            delete openList[(openList.indexOf(coordinate))]; // remove nextToExplore from open list
+        }
+    });
+}
+
 exports.searchFor = function (destination, startCoordinates, environment) {
     var openList = [];
     var closedList = [];
@@ -93,13 +101,9 @@ exports.searchFor = function (destination, startCoordinates, environment) {
             break;
         } else {
             var nextToExplore = currentLocation = exports.findPointWithLowestFCost(openList);
-            closedList.push(nextToExplore);
-            _.map(openList, function (coordinate) {
-                if (coordinate.xAxis == nextToExplore.xAxis && coordinate.yAxis == nextToExplore.yAxis) {
-                    delete openList[(openList.indexOf(coordinate))]; // remove nextToExplore from open list
-                }
-            });
-            // get the adjacent coordinates, check if each exists on the open list
+            closedList.push(nextToExplore); // added to our shortest path
+            removeNextToExploreFromOpenList(openList, nextToExplore);
+
             var adjacentCoordinates = exports.validateCoordinates(exports.getAdjacentCoordinates(nextToExplore), environment);
             _.map(adjacentCoordinates, function (adjacentCoordinate) {
                 _.map(openList, function (openListCoordinate) {

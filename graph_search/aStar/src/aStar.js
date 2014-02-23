@@ -54,7 +54,7 @@ exports.calculateFCost = function (currentLocation) {
 };
 
 // returns {point} from the [openList] with the lowest fCost
-exports.findCoordinateWithLowestFCost = function (openList) {
+exports.findPointWithLowestFCost = function (openList) {
     var pointWithLowestFCost = null;
     _.map(openList, function (element) {
         if (pointWithLowestFCost === null) {
@@ -92,7 +92,7 @@ exports.searchFor = function (destination, startCoordinates, environment) {
         if (destinationReached(currentLocation, destination)) {
             break;
         } else {
-            var nextToExplore = currentLocation = exports.findCoordinateWithLowestFCost(openList);
+            var nextToExplore = currentLocation = exports.findPointWithLowestFCost(openList);
             closedList.push(nextToExplore);
             _.map(openList, function (coordinate) {
                 if (coordinate.xAxis == nextToExplore.xAxis && coordinate.yAxis == nextToExplore.yAxis) {

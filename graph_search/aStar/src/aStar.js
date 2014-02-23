@@ -67,8 +67,8 @@ exports.findPointWithLowestFCost = function (openList) {
     return pointWithLowestFCost;
 };
 
-createPoint = function (idCounter, destination, coordinates, parentID, gCostValue) {
-    startPoint = {id: idCounter, xAxis: coordinates.xAxis, yAxis: coordinates.yAxis, parentSquare: parentID, gCost: gCostValue};
+createPoint = function (idCounter, destination, coordinates, parentID, gCost) {
+    startPoint = {id: idCounter, xAxis: coordinates.xAxis, yAxis: coordinates.yAxis, parentID: parentID, gCost: gCost};
     startPoint.hCost = exports.calculateHCost(startPoint, destination);
     startPoint.fCost = exports.calculateFCost(startPoint);
     idCounter++
@@ -78,7 +78,6 @@ createPoint = function (idCounter, destination, coordinates, parentID, gCostValu
 sameCoordinates = function (pointA, pointB) {
   return pointA.xAxis == pointB.xAxis && pointA.yAxis == pointB.yAxis
 }
-
 
 removeCurrentLocationFromOpenList = function (openList, currentLocation) {
     _.map(openList, function (coordinate) {
@@ -91,7 +90,7 @@ removeCurrentLocationFromOpenList = function (openList, currentLocation) {
 exports.run = function (destination, startCoordinates, environment) {
     var openList = [];
     var closedList = [];
-    var idCounter = 2;
+    var idCounter = 0;
 
     var currentLocation = createPoint(idCounter, destination, startCoordinates, 0, 0);
     openList.push(currentLocation);
@@ -108,10 +107,13 @@ exports.run = function (destination, startCoordinates, environment) {
             _.map(adjacentCoordinates, function (adjacentCoordinate) {
                 _.map(openList, function (openListCoordinate) {
                     if (sameCoordinates(openListCoordinate, adjacentCoordinate)) { // already been added to openList
-                        // check to see if path to adjacent coordinate has a better G cost than the one currently on the openList
-                        //    if it is better
-                        //       change the parent of adjacent coordinate to the current coordinate - recalculate g and f costs of that coordinate
-                    } else { // brand new coordinate
+                        if (adjacentCoordinate.gCost < openListCoordinate.gCost) { // recalculate data for that point
+                            openListCoordinate.parentID = currentLocation.id
+                            openListCoordinate.gCost = exports.calculateGCost(currentLocation, openListCoordinate, destination)
+                            openListCoordinate.hCost = exports.calculateHCost(openListCoordinate, destination);
+                            openListCoordinate.fCost = exports.calculateFCost(openListCoordinate);
+                        }
+                    } else { // add new point to openList
                         point = createPoint(idCounter, destination, adjacentCoordinate, currentLocation.id, 0)
                         openList.push(point);
                         //TODO: G cost value should not be 0 - it should be based on the path generated to reach this new point

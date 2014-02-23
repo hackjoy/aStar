@@ -67,55 +67,54 @@ exports.findPointWithLowestFCost = function (openList) {
     return pointWithLowestFCost;
 };
 
-createStartPoint = function (destination, initialCoordinates) {
-    startPoint = {id: 1, xAxis: initialCoordinates.xAxis, yAxis: initialCoordinates.yAxis, parentSquare: 0, gCost: 0};
+createPoint = function (idCounter, destination, coordinates, parentID, gCostValue) {
+    startPoint = {id: idCounter, xAxis: coordinates.xAxis, yAxis: coordinates.yAxis, parentSquare: parentID, gCost: gCostValue};
     startPoint.hCost = exports.calculateHCost(startPoint, destination);
     startPoint.fCost = exports.calculateFCost(startPoint);
+    idCounter++
     return startPoint
 }
 
-sameCoordinate = function (pointA, pointB) {
+sameCoordinates = function (pointA, pointB) {
   return pointA.xAxis == pointB.xAxis && pointA.yAxis == pointB.yAxis
 }
 
 
-removeNextToExploreFromOpenList = function (openList, nextToExplore) {
+removeCurrentLocationFromOpenList = function (openList, currentLocation) {
     _.map(openList, function (coordinate) {
-        if (coordinate.xAxis == nextToExplore.xAxis && coordinate.yAxis == nextToExplore.yAxis) {
-            delete openList[(openList.indexOf(coordinate))]; // remove nextToExplore from open list
+        if (coordinate.xAxis == currentLocation.xAxis && coordinate.yAxis == currentLocation.yAxis) {
+            delete openList[(openList.indexOf(coordinate))]; // remove currentLocation from open list
         }
     });
 }
 
-exports.searchFor = function (destination, startCoordinates, environment) {
+exports.run = function (destination, startCoordinates, environment) {
     var openList = [];
     var closedList = [];
     var idCounter = 2;
 
-    var start = createStartPoint(destination, startCoordinates);
-    openList.push(start);
+    var currentLocation = createPoint(idCounter, destination, startCoordinates, 0, 0);
+    openList.push(currentLocation);
 
     while (true) {
-        if (sameCoordinate(currentLocation, destination)) {
+        if (sameCoordinates(currentLocation, destination)) {
             break;
         } else {
-            var nextToExplore = exports.findPointWithLowestFCost(openList);
-            closedList.push(nextToExplore); // added to our shortest path
-            removeNextToExploreFromOpenList(openList, nextToExplore);
+            var currentLocation = exports.findPointWithLowestFCost(openList);
+            closedList.push(currentLocation); // add to shortest path
+            removeCurrentLocationFromOpenList(openList, currentLocation);
 
-            var adjacentCoordinates = exports.validateCoordinates(exports.getAdjacentCoordinates(nextToExplore), environment);
+            var adjacentCoordinates = exports.validateCoordinates(exports.getAdjacentCoordinates(currentLocation), environment);
             _.map(adjacentCoordinates, function (adjacentCoordinate) {
                 _.map(openList, function (openListCoordinate) {
-                    if (sameCoordinate(openListCoordinate, nextToExplore)) {
-                        // check to see if path to this square has a better G cost than the one currently on the openList
-                        //      if it is better
-                        //        change the parent of this square to the current square - recalculate g and f costs of that square
-                    } else {
-                        // add adjacentCoordinate to openList with nextToExplore as the parent
-                        co = {id: idCounter, xAxis: adjacentCoordinate.xAxis, yAxis: adjacentCoordinate.yAxis, parentSquare: nextToExplore.id, gCost: 0};
-                        co.hCost = exports.calculateHCost(co, destination);
-                        co.fCost = exports.calculateFCost(co);
-                        openList.push(co);
+                    if (sameCoordinates(openListCoordinate, adjacentCoordinate)) { // already been added to openList
+                        // check to see if path to adjacent coordinate has a better G cost than the one currently on the openList
+                        //    if it is better
+                        //       change the parent of adjacent coordinate to the current coordinate - recalculate g and f costs of that coordinate
+                    } else { // brand new coordinate
+                        point = createPoint(idCounter, destination, adjacentCoordinate, currentLocation.id, 0)
+                        openList.push(point);
+                        //TODO: G cost value should not be 0 - it should be based on the path generated to reach this new point
                     }
                 });
             });

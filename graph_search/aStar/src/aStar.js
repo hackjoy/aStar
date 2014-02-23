@@ -74,8 +74,8 @@ createStartPoint = function (destination, initialCoordinates) {
     return startPoint
 }
 
-destinationReached = function (currentLocation, destination) {
-  return currentLocation.xAxis == destination.xAxis && currentLocation.yAxis == destination.yAxis
+sameCoordinate = function (pointA, pointB) {
+  return pointA.xAxis == pointB.xAxis && pointA.yAxis == pointB.yAxis
 }
 
 
@@ -92,22 +92,21 @@ exports.searchFor = function (destination, startCoordinates, environment) {
     var closedList = [];
     var idCounter = 2;
 
-    // Add initialCoordinates to the openList
-    var currentLocation = createStartPoint(destination, startCoordinates);
-    openList.push(currentLocation);
+    var start = createStartPoint(destination, startCoordinates);
+    openList.push(start);
 
     while (true) {
-        if (destinationReached(currentLocation, destination)) {
+        if (sameCoordinate(currentLocation, destination)) {
             break;
         } else {
-            var nextToExplore = currentLocation = exports.findPointWithLowestFCost(openList);
+            var nextToExplore = exports.findPointWithLowestFCost(openList);
             closedList.push(nextToExplore); // added to our shortest path
             removeNextToExploreFromOpenList(openList, nextToExplore);
 
             var adjacentCoordinates = exports.validateCoordinates(exports.getAdjacentCoordinates(nextToExplore), environment);
             _.map(adjacentCoordinates, function (adjacentCoordinate) {
                 _.map(openList, function (openListCoordinate) {
-                    if (openListCoordinate.xAxis == nextToExplore.xAxis && openListCoordinate.yAxis == nextToExplore.yAxis) {
+                    if (sameCoordinate(openListCoordinate, nextToExplore)) {
                         // check to see if path to this square has a better G cost than the one currently on the openList
                         //      if it is better
                         //        change the parent of this square to the current square - recalculate g and f costs of that square

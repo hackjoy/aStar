@@ -11,6 +11,8 @@
     "underscore": ""
   },
   "devDependencies": {
-    "jasmine-node": ""
+    "jasmine-node": "",
+    "grunt": "^0.4.4",
+    "grunt-contrib-coffee": "^0.10.1"
   }
 }

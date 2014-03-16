@@ -5,5 +5,5 @@ Based on the excellent explanation here: http://www.policyalmanac.org/games/aSta
 Run the following:
 
 $ npm install
-$ cd graph_search/aStar
-$ jasmine-node --verbose aStarSpec.js
+$ cd graph_search/aStar/spec
+$ grunt && jasmine-node aStarSpec.js

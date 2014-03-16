@@ -82,9 +82,9 @@ describe "aStar search", ->
 
   describe "integration test", ->
     it "should return the shortest path given a destination, starting point and environment", ->
-      # destination = {xAxis: 7, yAxis: 3}
-      # startCoordinates = {xAxis: 1, yAxis: 3}
-      # environment = {walls: [{xAxis: 4, yAxis: 2}, {xAxis: 4, yAxis: 3}, {xAxis: 4, yAxis: 4}], worldSize: {xAxis: 2, yAxis: 2}}
-      # result = aStar.run(destination, startCoordinates, environment)
-      # expectedResult = []
-      # expect(result).toEqual(expectedResult)
+      destination = {xAxis: 7, yAxis: 3}
+      startCoordinates = {xAxis: 1, yAxis: 3}
+      environment = {walls: [{xAxis: 4, yAxis: 2}, {xAxis: 4, yAxis: 3}, {xAxis: 4, yAxis: 4}], worldSize: {xAxis: 2, yAxis: 2}}
+      result = aStar.run(destination, startCoordinates, environment)
+      expectedResult = []
+      expect(result).toEqual(expectedResult)

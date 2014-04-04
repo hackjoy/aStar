@@ -12,16 +12,16 @@ exports.getAdjacentCoordinates = (currentLocation) ->
   , currentLocation)
   return adjacentCoordinates
 
-# receives an array of coordinate objects [{coordinates1}, {coordinates2}, {...} ] and returns new array of valid coordinate objects
+# receives an array of coordinate objects [{coordinates1}, {coordinates2}, {...} ] and returns new array of *valid* coordinate objects based on the environment parameters
 exports.validateCoordinates = (adjacentCoordinates, environment) ->
   validatedCoordinates = []
   _.each adjacentCoordinates, (coordinate) ->
     if withinWorldBoundary(coordinate, environment)
       valid = true
       _.each environment.walls, (wall) ->
-        if (coordinate.xAxis == wall.xAxis) && (coordinate.yAxis == wall.yAxis)
+        if coordinate.xAxis == wall.xAxis && coordinate.yAxis == wall.yAxis
           valid = false
-      validatedCoordinates.push coordinate if valid is true # adds each coordinate 3 times!!!
+      validatedCoordinates.push coordinate if valid is true
   return validatedCoordinates
 
 withinWorldBoundary = (coordinate, environment) ->

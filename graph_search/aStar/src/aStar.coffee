@@ -68,15 +68,13 @@ removeCurrentLocationFromOpenList = (openList, currentLocation) ->
     if (coordinate.xAxis == currentLocation.xAxis && coordinate.yAxis == currentLocation.yAxis)
       delete openList[(openList.indexOf(coordinate))]
 
-# TODO: Complete full implementation
-# split into small functions that .run() calls
-
+# TODO: Complete full implementation - split into small functions that .run() calls
 exports.run = (destination, startCoordinates, environment) ->
   # Algorithm state variables
-  coordinateIDCounter = 0
-  openList = []
-  closedList = []
-  currentLocation = {} # updated and compared with the destination on each iteration
+  coordinateIDCounter = 0  # unique identifier for coordinates
+  openList = []            # list of coordinates that have been found but not yet explored
+  closedList = []          # list of coordinates that form part of the shortest path
+  currentLocation = {}     # updated and compared with the destination on each iteration
 
   # Begin with the startCoordinates as our current location
   currentLocation = createPoint({id: coordinateIDCounter, destination: destination, coordinates: startCoordinates, parentID: coordinateIDCounter, gCost: 0}, destination)
@@ -84,23 +82,28 @@ exports.run = (destination, startCoordinates, environment) ->
   coordinateIDCounter++
 
   while sameCoordinates(currentLocation, destination) is false
+    console.log exports.findPointWithLowestFCost(openList)
     currentLocation = exports.findPointWithLowestFCost(openList)
     closedList.push currentLocation
-    adjacentCoordinates = exports.validateCoordinates(exports.getAdjacentCoordinates(currentLocation), environment)  #TODO: Not generationg correct coordinates!!
+    adjacentCoordinates = exports.validateCoordinates(exports.getAdjacentCoordinates(currentLocation), environment)
 
-    for adjacentCoordinate in adjacentCoordinates
+    for adjacentCoordinate in adjacentCoordinates   # there is a mismatch here
       for openListCoordinate in openList
+        console.log "openListCoordinate: #{JSON.stringify(openListCoordinate)}"
+        console.log "adjacentCoordinate: #{JSON.stringify(adjacentCoordinate)}"
         if sameCoordinates(openListCoordinate, adjacentCoordinate)
           # It's already been added to openList so check the gCost
           if (adjacentCoordinate.gCost < openListCoordinate.gCost)
-            # Found a better route so recalculate data for that point
+            # We found a better route so recalculate cost data for route to that coordinate
             openListCoordinate.parentID = currentLocation.id
             openListCoordinate.gCost = exports.calculateGCost(currentLocation, openListCoordinate, destination)
             openListCoordinate.hCost = exports.calculateHCost(openListCoordinate, destination)
             openListCoordinate.fCost = exports.calculateFCost(openListCoordinate)
             removeCurrentLocationFromOpenList(openList, currentLocation)
+          else
+            removeCurrentLocationFromOpenList(openList, currentLocation)
         else
-          point = createPoint({id: coordinateIDCounter, destination: destination, coordinates: adjacentCoordinate, parentID: currentLocation.id, gCost: 0}, destination) #TODO: NEED TO CALCULATE REAL GCOST HERE!! - based on the path generated to reach this new point
+          point = createPoint({id: coordinateIDCounter, destination: destination, coordinates: adjacentCoordinate, parentID: currentLocation.id, gCost: 0}, destination) #TODO: NEED TO CALCULATE **REAL** GCOST HERE!! - based on the path generated to reach this point
           openList.push point
           coordinateIDCounter++
           removeCurrentLocationFromOpenList(openList, currentLocation)

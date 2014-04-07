@@ -82,19 +82,17 @@ exports.run = (destination, startCoordinates, environment) ->
   coordinateIDCounter++
 
   while sameCoordinates(currentLocation, destination) is false
-    console.log exports.findPointWithLowestFCost(openList)
+    console.log "Lowest F Cost: #{JSON.stringify(exports.findPointWithLowestFCost(openList))}"
     currentLocation = exports.findPointWithLowestFCost(openList)
     closedList.push currentLocation
     adjacentCoordinates = exports.validateCoordinates(exports.getAdjacentCoordinates(currentLocation), environment)
 
-    for adjacentCoordinate in adjacentCoordinates   # there is a mismatch here
-      for openListCoordinate in openList
+    _.each adjacentCoordinates, (adjacentCoordinate) ->
+      _.each openList, (openListCoordinate) ->
         console.log "openListCoordinate: #{JSON.stringify(openListCoordinate)}"
         console.log "adjacentCoordinate: #{JSON.stringify(adjacentCoordinate)}"
-        if sameCoordinates(openListCoordinate, adjacentCoordinate)
-          # It's already been added to openList so check the gCost
-          if (adjacentCoordinate.gCost < openListCoordinate.gCost)
-            # We found a better route so recalculate cost data for route to that coordinate
+        if sameCoordinates(openListCoordinate, adjacentCoordinate) # then it's already been added to openList so check the gCost
+          if (adjacentCoordinate.gCost < openListCoordinate.gCost) # then we found a better route so recalculate cost data for route to that coordinate
             openListCoordinate.parentID = currentLocation.id
             openListCoordinate.gCost = exports.calculateGCost(currentLocation, openListCoordinate, destination)
             openListCoordinate.hCost = exports.calculateHCost(openListCoordinate, destination)

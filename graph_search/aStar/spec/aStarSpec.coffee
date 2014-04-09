@@ -53,13 +53,12 @@ describe "aStar search", ->
   describe "calculating costs", ->
 
     it 'should calculate the gCost', ->
-      currentLocation = {xAxis: 2, yAxis: 1}
-      a1 = {id: 1, xAxis: 1, yAxis: 1, parentSquare: 0, fCost: 40, gCost: 0, hCost: 40}
-      a2 = {id: 2, xAxis: 2, yAxis: 1, parentSquare: 1, fCost: 40, gCost: 10, hCost: 30}
-      a3 = {id: 3, xAxis: 3, yAxis: 1, parentSquare: 2, fCost: 40, gCost: 20, hCost: 20}
+      a1 = {id: 1, xAxis: 1, yAxis: 1, parentSquare: 0, fCost: 40, gCost: 0, hCost: 40, cost: 10}
+      a2 = {id: 2, xAxis: 2, yAxis: 1, parentSquare: 1, fCost: 40, gCost: 10, hCost: 30, cost: 10}
+      a3 = {id: 3, xAxis: 3, yAxis: 1, parentSquare: 2, fCost: 40, gCost: 20, hCost: 20, cost: 10}
       closedList = [a1, a2, a3]
-      proposedLocation = {id: 4, xAxis: 1, yAxis: 2, parentSquare: 3, cost: 10}
-      gCost = aStar.calculateGCost(currentLocation, proposedLocation, closedList)
+      newCoordinates = {id: 4, xAxis: 1, yAxis: 2, parentSquare: 3, cost: 10}
+      gCost = aStar.calculateGCost(newCoordinates.id, newCoordinates.cost, closedList)
       expect(gCost).toEqual(30)
 
     it "should calculate the hCost", ->
@@ -84,7 +83,7 @@ describe "aStar search", ->
     it "should return the shortest path given a destination, starting point and environment", ->
       destination = {xAxis: 7, yAxis: 3}
       startCoordinates = {xAxis: 1, yAxis: 3}
-      environment = {walls: [{xAxis: 4, yAxis: 2}, {xAxis: 4, yAxis: 3}, {xAxis: 4, yAxis: 4}], worldSize: {xAxis: 8, yAxis: 8}}
+      environment = {walls: [{xAxis: 4, yAxis: 2}, {xAxis: 4, yAxis: 3}, {xAxis: 4, yAxis: 4}], worldSize: {xAxis: 10, yAxis: 10}}
       result = aStar.run(destination, startCoordinates, environment)
       expectedResult = []
       expect(result).toEqual(expectedResult)

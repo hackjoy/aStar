@@ -30,11 +30,11 @@ withinWorldBoundary = (coordinate, environment) ->
   else false
 
 # calculates the movement cost from the start to the current location based on the path generated to get there. gCost = gCost of parent + current move cost
-exports.calculateGCost = (currentLocation, proposedLocation, closedList) ->
+exports.calculateGCost = (newCoordinatesID, newCoordinatesCost, closedList) ->
   gCost = undefined
   _.map closedList, (point) ->
-    if point.id == proposedLocation.id - 1
-      gCost = point.gCost + proposedLocation.cost
+    if point.id == newCoordinatesID - 1
+      gCost = point.gCost + newCoordinatesCost
   return gCost
 
 # calculates estimated distance to the destination co-ordinates from current co-ordinates in absolute terms, ignoring diagonal moves and obstacles
@@ -54,11 +54,12 @@ exports.findPointWithLowestFCost = (openList) ->
       pointWithLowestFCost = element
   return pointWithLowestFCost
 
-createPoint = (input, destination) ->
-  startPoint = {id: input.id, xAxis: input.coordinates.xAxis, yAxis: input.coordinates.yAxis, parentID: input.parentID, gCost: input.gCost}
-  startPoint.hCost = exports.calculateHCost(startPoint, destination)
-  startPoint.fCost = exports.calculateFCost(startPoint)
-  return startPoint
+createPoint = (input, destination, closedList) ->
+  point = {id: input.id, xAxis: input.coordinates.xAxis, yAxis: input.coordinates.yAxis, cost: input.cost, parentID: input.parentID, gCost: input.gCost}
+  point.gCost = if closedList then exports.calculateGCost(point.id, point.cost, closedList) else 0
+  point.hCost = exports.calculateHCost(point, destination)
+  point.fCost = exports.calculateFCost(point)
+  return point
 
 sameCoordinates = (pointA, pointB) ->
   return pointA.xAxis == pointB.xAxis && pointA.yAxis == pointB.yAxis
@@ -68,40 +69,42 @@ removeCurrentLocationFromOpenList = (openList, currentLocation) ->
     if (coordinate.xAxis == currentLocation.xAxis && coordinate.yAxis == currentLocation.yAxis)
       delete openList[(openList.indexOf(coordinate))]
 
-# TODO: Complete full implementation - split into small functions that .run() calls
+updateCoordinateCosts = (openListCoordinate, currentLocation, destination) ->
+  openListCoordinate.parentID = currentLocation.id
+  openListCoordinate.gCost = exports.calculateGCost(currentLocation.id, currentLocation.cost, destination)
+  openListCoordinate.hCost = exports.calculateHCost(openListCoordinate, destination)
+  openListCoordinate.fCost = exports.calculateFCost(openListCoordinate)
+  return openListCoordinate
+
+# TODO: Complete full implementation & split into small functions that .run() calls
 exports.run = (destination, startCoordinates, environment) ->
-  # Algorithm state variables
   coordinateIDCounter = 0  # unique identifier for coordinates
   openList = []            # list of coordinates that have been found but not yet explored
   closedList = []          # list of coordinates that form part of the shortest path
   currentLocation = {}     # updated and compared with the destination on each iteration
 
-  # Begin with the startCoordinates as our current location
-  currentLocation = createPoint({id: coordinateIDCounter, destination: destination, coordinates: startCoordinates, parentID: coordinateIDCounter, gCost: 0}, destination)
+  # Begin with startCoordinates as our current location
+  currentLocation = createPoint({id: coordinateIDCounter, destination: destination, coordinates: startCoordinates, cost: 0, parentID: coordinateIDCounter, gCost: 0}, destination)
   openList.push currentLocation
   coordinateIDCounter++
 
+  # TODO: its stuck in the loop
   while sameCoordinates(currentLocation, destination) is false
-    console.log "Lowest F Cost: #{JSON.stringify(exports.findPointWithLowestFCost(openList))}"
+    # console.log "Lowest F Cost: #{JSON.stringify(exports.findPointWithLowestFCost(openList))}"
     currentLocation = exports.findPointWithLowestFCost(openList)
     closedList.push currentLocation
     adjacentCoordinates = exports.validateCoordinates(exports.getAdjacentCoordinates(currentLocation), environment)
-
+    # console.log adjacentCoordinates
     _.each adjacentCoordinates, (adjacentCoordinate) ->
       _.each openList, (openListCoordinate) ->
-        console.log "openListCoordinate: #{JSON.stringify(openListCoordinate)}"
-        console.log "adjacentCoordinate: #{JSON.stringify(adjacentCoordinate)}"
-        if sameCoordinates(openListCoordinate, adjacentCoordinate) # then it's already been added to openList so check the gCost
-          if (adjacentCoordinate.gCost < openListCoordinate.gCost) # then we found a better route so recalculate cost data for route to that coordinate
-            openListCoordinate.parentID = currentLocation.id
-            openListCoordinate.gCost = exports.calculateGCost(currentLocation, openListCoordinate, destination)
-            openListCoordinate.hCost = exports.calculateHCost(openListCoordinate, destination)
-            openListCoordinate.fCost = exports.calculateFCost(openListCoordinate)
+        if sameCoordinates(openListCoordinate, adjacentCoordinate) # theh the coordinate we found is already on the openList - check it's gCost
+          if (adjacentCoordinate.gCost < openListCoordinate.gCost) # then we found a better route to that coordinate, update it's parent and re-calculate it's cost data
+            openListCoordinate = updateCoordinateCosts(openListCoordinate, currentLocation, destination)
             removeCurrentLocationFromOpenList(openList, currentLocation)
           else
             removeCurrentLocationFromOpenList(openList, currentLocation)
         else
-          point = createPoint({id: coordinateIDCounter, destination: destination, coordinates: adjacentCoordinate, parentID: currentLocation.id, gCost: 0}, destination) #TODO: NEED TO CALCULATE **REAL** GCOST HERE!! - based on the path generated to reach this point
+          point = createPoint({id: coordinateIDCounter, destination: destination, coordinates: adjacentCoordinate, cost: adjacentCoordinate.cost, parentID: currentLocation.id}, destination, closedList)
           openList.push point
           coordinateIDCounter++
           removeCurrentLocationFromOpenList(openList, currentLocation)

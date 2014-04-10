@@ -78,10 +78,10 @@ updateCoordinateCosts = (openListCoordinate, currentLocation, destination) ->
 
 # TODO: Complete full implementation & split into small functions that .run() calls
 exports.run = (destination, startCoordinates, environment) ->
-  coordinateIDCounter = 0  # unique identifier for coordinates
-  openList = []            # list of coordinates that have been found but not yet explored
-  closedList = []          # list of coordinates that form part of the shortest path
-  currentLocation = {}     # updated and compared with the destination on each iteration
+  coordinateIDCounter = 0   # unique identifier for coordinates
+  openList = []             # list of coordinates that have been found but not yet explored
+  closedList = []           # list of coordinates that form part of the shortest path
+  currentLocation = {}      # updated and compared with the destination on each iteration
 
   # Begin with startCoordinates as our current location
   currentLocation = createPoint({id: coordinateIDCounter, destination: destination, coordinates: startCoordinates, cost: 0, parentID: coordinateIDCounter, gCost: 0}, destination)
@@ -92,25 +92,18 @@ exports.run = (destination, startCoordinates, environment) ->
   while sameCoordinates(currentLocation, destination) is false
     # console.log "Lowest F Cost: #{JSON.stringify(exports.findPointWithLowestFCost(openList))}"
     currentLocation = exports.findPointWithLowestFCost(openList)
+    removeCurrentLocationFromOpenList(openList, currentLocation)
     closedList.push currentLocation
     adjacentCoordinates = exports.validateCoordinates(exports.getAdjacentCoordinates(currentLocation), environment)
-    # console.log adjacentCoordinates
+
     _.each adjacentCoordinates, (adjacentCoordinate) ->
       _.each openList, (openListCoordinate) ->
-        if sameCoordinates(openListCoordinate, adjacentCoordinate) # theh the coordinate we found is already on the openList - check it's gCost
-          if (adjacentCoordinate.gCost < openListCoordinate.gCost) # then we found a better route to that coordinate, update it's parent and re-calculate it's cost data
-            openListCoordinate = updateCoordinateCosts(openListCoordinate, currentLocation, destination)
-            removeCurrentLocationFromOpenList(openList, currentLocation)
-          else
-            removeCurrentLocationFromOpenList(openList, currentLocation)
+        if sameCoordinates(openListCoordinate, adjacentCoordinate) and (adjacentCoordinate.gCost < openListCoordinate.gCost)
+          openListCoordinate = updateCoordinateCosts(openListCoordinate, currentLocation, destination)
         else
           point = createPoint({id: coordinateIDCounter, destination: destination, coordinates: adjacentCoordinate, cost: adjacentCoordinate.cost, parentID: currentLocation.id}, destination, closedList)
           openList.push point
           coordinateIDCounter++
-          removeCurrentLocationFromOpenList(openList, currentLocation)
 
   return closedList
-
-
-
 

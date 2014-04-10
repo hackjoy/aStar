@@ -25,9 +25,7 @@ exports.validateCoordinates = (adjacentCoordinates, environment) ->
   return validatedCoordinates
 
 withinWorldBoundary = (coordinate, environment) ->
-  if (coordinate.xAxis <= environment.worldSize.xAxis) && (coordinate.yAxis <= environment.worldSize.yAxis) && (coordinate.xAxis >= 0) && (coordinate.yAxis >= 0)
-    true
-  else false
+  true if (coordinate.xAxis <= environment.worldSize.xAxis) && (coordinate.yAxis <= environment.worldSize.yAxis) && (coordinate.xAxis >= 0) && (coordinate.yAxis >= 0)
 
 # calculates the movement cost from the start to the current location based on the path generated to get there. gCost = gCost of parent + current move cost
 exports.calculateGCost = (newCoordinatesID, newCoordinatesCost, closedList) ->
@@ -78,7 +76,7 @@ updateCoordinateCosts = (openListCoordinate, currentLocation, destination) ->
 
 # TODO: Complete full implementation & split into small functions that .run() calls
 exports.run = (destination, startCoordinates, environment) ->
-  coordinateIDCounter = 0   # unique identifier for coordinates
+  coordinateIDCounter = 0   # unique ID for coordinates
   openList = []             # list of coordinates that have been found but not yet explored
   closedList = []           # list of coordinates that form part of the shortest path
   currentLocation = {}      # updated and compared with the destination on each iteration

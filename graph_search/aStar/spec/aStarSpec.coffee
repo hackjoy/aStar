@@ -79,6 +79,8 @@ describe "aStar search", ->
       openList = [a1, a2, a3]
       expect(aStar.findPointWithLowestFCost(openList)).toEqual(a2)
 
+    # it "should recalculate costs when a better path has been found to a coordinate", ->
+
   describe "integration test", ->
     it "should return the shortest path given a destination, starting point and environment", ->
       destination = {xAxis: 7, yAxis: 3}

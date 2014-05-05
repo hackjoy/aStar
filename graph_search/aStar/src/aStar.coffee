@@ -1,7 +1,7 @@
 _ = require 'underscore'
 
 # receives coordinate object e.g. {xAxis: 3, yAxis: 3} and returns an array of 8 adjacent coordinate objects [{xAxis: 2, yAxis: 3}, {xAxis: 3, yAxis: 2} ... ]
-exports.getAdjacentCoordinates = (currentLocation) ->
+getAdjacentCoordinates = (currentLocation) ->
   adjacentMovements = [{xAxis: -1, yAxis: 1, cost: 14},  {xAxis: 0, yAxis: 1, cost: 10},  {xAxis: 1, yAxis: 1, cost: 14},
                        {xAxis: -1, yAxis: 0, cost: 10},                                   {xAxis: 1, yAxis: 0, cost: 10},
                        {xAxis: -1, yAxis: -1, cost: 14}, {xAxis: 0, yAxis: -1, cost: 10}, {xAxis: 1, yAxis: -1, cost: 14}]
@@ -13,7 +13,7 @@ exports.getAdjacentCoordinates = (currentLocation) ->
   adjacentCoordinates
 
 # receives an array of coordinate objects e.g. [{xAxis: 2, yAxis: 3}, {xAxis: 3, yAxis: 2} ... ] and returns new array of *valid* coordinate objects based on the environment
-exports.validateCoordinates = (adjacentCoordinates, environment) ->
+validateCoordinates = (adjacentCoordinates, environment) ->
   validatedCoordinates = []
   _.each adjacentCoordinates, (coordinate) ->
     if withinWorldBoundary(coordinate, environment)
@@ -26,25 +26,12 @@ exports.validateCoordinates = (adjacentCoordinates, environment) ->
 withinWorldBoundary = (coordinate, environment) ->
   true if (coordinate.xAxis <= environment.worldSize.xAxis) and (coordinate.yAxis <= environment.worldSize.yAxis) and (coordinate.xAxis >= 0) and (coordinate.yAxis >= 0)
 
-# calculates the movement cost from the start to the current location based on the path generated to get there. gCost = gCost of parent + current move cost
-exports.calculateGCost = (newCoordinatesID, newCoordinatesCost, closedList) ->
-  gCost = undefined
-  _.map closedList, (point) ->
-    if point.id == newCoordinatesID - 1
-      gCost = point.gCost + newCoordinatesCost
-      console.log gCost
-  console.log gCost
-  gCost
-
 # calculates estimated distance to the destination co-ordinates from current co-ordinates in absolute terms, ignoring diagonal moves and obstacles
-exports.calculateHCost = (currentLocation, destination) ->
+calculateHCost = (currentLocation, destination) ->
   (Math.abs(destination.xAxis - currentLocation.xAxis) * 10) + (Math.abs(destination.yAxis - currentLocation.yAxis) * 10)
 
-exports.calculateFCost = (currentLocation) ->
-  currentLocation.hCost + currentLocation.gCost
-
 # returns point object from the openList with the lowest fCost
-exports.findPointWithLowestFCost = (openList) ->
+findPointWithLowestFCost = (openList) ->
   pointWithLowestFCost = null
   _.map openList, (element) ->
     if pointWithLowestFCost == null
@@ -53,50 +40,52 @@ exports.findPointWithLowestFCost = (openList) ->
       pointWithLowestFCost = element
   pointWithLowestFCost
 
-createPoint = (input, destination, closedList) ->
-  point = {id: input.id, xAxis: input.coordinates.xAxis, yAxis: input.coordinates.yAxis, cost: input.cost, parentID: input.parentID}
-  point.gCost = if input.id is 0 then 0 else exports.calculateGCost(point.id, point.cost, closedList)
-  point.hCost = exports.calculateHCost(point, destination)
-  point.fCost = exports.calculateFCost(point)
-  point
-
 sameCoordinates = (pointA, pointB) ->
   if pointA and pointB then pointA.xAxis == pointB.xAxis and pointA.yAxis == pointB.yAxis else false
 
-removeCurrentLocationFromOpenList = (openList, currentLocation) ->
-  _.map openList, (coordinate) ->
-    if (coordinate.xAxis == currentLocation.xAxis and coordinate.yAxis == currentLocation.yAxis)
-      delete openList[(openList.indexOf(coordinate))]
+removeCoordinateFrom = (list, coordinate) ->
+  _.reject list, (coordinate) ->
+    coordinate.xAxis == coordinate.xAxis and coordinate.yAxis == coordinate.yAxis
 
-updateCoordinateCosts = (openListCoordinate, currentLocation, destination) ->
-  openListCoordinate.parentID = currentLocation.id
-  openListCoordinate.gCost = exports.calculateGCost(currentLocation.id, currentLocation.cost, destination)
-  openListCoordinate.hCost = exports.calculateHCost(openListCoordinate, destination)
-  openListCoordinate.fCost = exports.calculateFCost(openListCoordinate)
+updateCoordinateCosts = (openListCoordinate, location, destination) ->
+  openListCoordinate.parentID = location.parentID
+  openListCoordinate.gCost = location.gCost
+  openListCoordinate.fCost = location.gCost + location.hCost
   openListCoordinate
 
-exports.run = (destination, startCoordinates, environment) ->
-  coordinateIDCounter = 0   # unique ID for coordinates
+createOpenListCoordinate = (input, location, destination, IDCounter) ->
+  point =
+    id: IDCounter
+    parentID: input.parentID
+    xAxis: location.xAxis
+    yAxis: location.yAxis
+    gCost: input.gCost
+    hCost: calculateHCost location, destination
+  point.fCost = point.gCost + point.hCost
+  IDCounter++
+  point
+
+exports.run = (destination, startPosition, environment) ->
   openList = []             # list of coordinates that have been found but not yet explored
   closedList = []           # list of coordinates that form part of the shortest path
   currentLocation = {}      # updated and compared with the destination on each iteration
+  IDCounter = 0             # unique ID for coordinates
 
-  # Begin with startCoordinates as our current location
-  openList.push createPoint({id: coordinateIDCounter, destination: destination, coordinates: startCoordinates, cost: 0, parentID: coordinateIDCounter}, destination, closedList)
-  coordinateIDCounter++
+  openList.push createOpenListCoordinate({parentID: 0, gCost: 0}, startPosition, destination, IDCounter)
 
-  # TODO: not assigning gCost correctly to new coordinates
-  while sameCoordinates(currentLocation, destination) is false
-    currentLocation = exports.findPointWithLowestFCost(openList)
-    removeCurrentLocationFromOpenList(openList, currentLocation)
+  while sameCoordinates currentLocation, destination is false
+    currentLocation = findPointWithLowestFCost openList
+    openList = removeCoordinateFrom openList, currentLocation
     closedList.push currentLocation
-    adjacentCoordinates = exports.validateCoordinates(exports.getAdjacentCoordinates(currentLocation), environment)
-    console.log adjacentCoordinates
-    for adjacentCoordinate in adjacentCoordinates
+
+    adjacentLocations = validateCoordinates(getAdjacentCoordinates currentLocation, environment)
+    adjacentLocations = _.map adjacentLocations, (location) ->
+      createOpenListCoordinate({parentID: currentLocation.id, gCost: currentLocation.gCost + location.gCost}, location, destination, IDCounter)
+
+    for location in adjacentLocations
       for openListCoordinate in openList
-        if sameCoordinates(openListCoordinate, adjacentCoordinate) and (adjacentCoordinate.gCost < openListCoordinate.gCost)
-          openListCoordinate = updateCoordinateCosts(openListCoordinate, currentLocation, destination)
+        if sameCoordinates openListCoordinate, location and location.gCost < openListCoordinate.gCost
+          openListCoordinate = updateCoordinateCosts openListCoordinate, location, destination
         else
-          openList.push createPoint({id: coordinateIDCounter, destination: destination, coordinates: adjacentCoordinate, cost: adjacentCoordinate.cost, parentID: currentLocation.id}, destination, closedList)
-          coordinateIDCounter++
+          openList.push location
   closedList

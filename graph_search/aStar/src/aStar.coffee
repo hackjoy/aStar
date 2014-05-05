@@ -41,7 +41,7 @@ findPointWithLowestFCost = (openList) ->
   pointWithLowestFCost
 
 sameCoordinates = (pointA, pointB) ->
-  if pointA and pointB then pointA.xAxis == pointB.xAxis and pointA.yAxis == pointB.yAxis else false
+  if pointA and pointB then pointA.xAxis == pointB.xAxis and pointA.yAxis == pointB.yAxis
 
 removeCoordinateFrom = (list, coordinate) ->
   _.reject list, (coordinate) ->
@@ -73,19 +73,19 @@ exports.run = (destination, startPosition, environment) ->
 
   openList.push createOpenListCoordinate({parentID: 0, gCost: 0}, startPosition, destination, IDCounter)
 
-  while sameCoordinates currentLocation, destination is false
+  while sameCoordinates(currentLocation, destination) is false
     currentLocation = findPointWithLowestFCost openList
-    openList = removeCoordinateFrom openList, currentLocation
+    openList = removeCoordinateFrom(openList, currentLocation)
     closedList.push currentLocation
 
-    adjacentLocations = validateCoordinates(getAdjacentCoordinates currentLocation, environment)
+    adjacentLocations = validateCoordinates getAdjacentCoordinates(currentLocation), environment
     adjacentLocations = _.map adjacentLocations, (location) ->
       createOpenListCoordinate({parentID: currentLocation.id, gCost: currentLocation.gCost + location.gCost}, location, destination, IDCounter)
 
     for location in adjacentLocations
       for openListCoordinate in openList
-        if sameCoordinates openListCoordinate, location and location.gCost < openListCoordinate.gCost
-          openListCoordinate = updateCoordinateCosts openListCoordinate, location, destination
+        if sameCoordinates(openListCoordinate, location) and location.gCost < openListCoordinate.gCost
+          openListCoordinate = updateCoordinateCosts(openListCoordinate, location, destination)
         else
           openList.push location
   closedList

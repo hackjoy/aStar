@@ -50,7 +50,7 @@ removeCoordinateFrom = (list, coordinate) ->
 updateCoordinateCosts = (openListCoordinate, location, destination) ->
   openListCoordinate.parentID = location.parentID
   openListCoordinate.gCost = location.gCost
-  openListCoordinate.fCost = location.gCost + location.hCost
+  openListCoordinate.fCost = location.fCost
   openListCoordinate
 
 createOpenListCoordinate = (input, location, destination, IDCounter) ->

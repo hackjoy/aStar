@@ -32,12 +32,9 @@ calculateHCost = (currentLocation, destination) ->
 
 # returns point object from the openList with the lowest fCost
 findPointWithLowestFCost = (openList) ->
-  pointWithLowestFCost = null
+  pointWithLowestFCost = undefined
   _.map openList, (element) ->
-    if pointWithLowestFCost == null
-      pointWithLowestFCost = element
-    else if (element.fCost < pointWithLowestFCost.fCost)
-      pointWithLowestFCost = element
+    pointWithLowestFCost = if pointWithLowestFCost is undefined or element.fCost < pointWithLowestFCost.fCost then element
   pointWithLowestFCost
 
 sameCoordinates = (pointA, pointB) ->

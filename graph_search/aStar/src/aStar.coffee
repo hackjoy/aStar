@@ -1,56 +1,56 @@
 _ = require 'underscore'
 
-# receives coordinate object e.g. {xAxis: 3, yAxis: 3} and returns an array of 8 adjacent coordinate objects [{xAxis: 2, yAxis: 3}, {xAxis: 3, yAxis: 2} ... ]
-getAdjacentCoordinates = (currentLocation) ->
+# receives location object e.g. {xAxis: 3, yAxis: 3} and returns an array of 8 adjacent location objects [{xAxis: 2, yAxis: 3}, {xAxis: 3, yAxis: 2} ... ]
+getAdjacentLocations = (currentLocation) ->
   adjacentMovements = [{xAxis: -1, yAxis: 1, cost: 14},  {xAxis: 0, yAxis: 1, cost: 10},  {xAxis: 1, yAxis: 1, cost: 14},
                        {xAxis: -1, yAxis: 0, cost: 10},                                   {xAxis: 1, yAxis: 0, cost: 10},
                        {xAxis: -1, yAxis: -1, cost: 14}, {xAxis: 0, yAxis: -1, cost: 10}, {xAxis: 1, yAxis: -1, cost: 14}]
-  adjacentCoordinates = _.map(adjacentMovements, (movement) ->
+  adjacentLocations = _.map(adjacentMovements, (movement) ->
     movement.xAxis += this.xAxis
     movement.yAxis += this.yAxis
     movement
   , currentLocation)
-  adjacentCoordinates
+  adjacentLocations
 
 # receives an array of coordinate objects e.g. [{xAxis: 2, yAxis: 3}, {xAxis: 3, yAxis: 2} ... ] and returns new array of *valid* coordinate objects based on the environment
-validateCoordinates = (adjacentCoordinates, environment) ->
-  validatedCoordinates = []
-  _.each adjacentCoordinates, (coordinate) ->
-    if withinWorldBoundary(coordinate, environment)
+validateLocations = (adjacentLocations, environment) ->
+  validatedLocations = []
+  _.each adjacentLocations, (location) ->
+    if withinWorldBoundary(location, environment)
       valid = true
       _.each environment.walls, (wall) ->
-        if (coordinate.xAxis == wall.xAxis and coordinate.yAxis == wall.yAxis) then valid = false
-      validatedCoordinates.push coordinate if valid is true
-  validatedCoordinates
+        if (location.xAxis == wall.xAxis and location.yAxis == wall.yAxis) then valid = false
+      validatedLocations.push location if valid is true
+  validatedLocations
 
-withinWorldBoundary = (coordinate, environment) ->
-  true if (coordinate.xAxis <= environment.worldSize.xAxis) and (coordinate.yAxis <= environment.worldSize.yAxis) and (coordinate.xAxis >= 0) and (coordinate.yAxis >= 0)
+withinWorldBoundary = (location, environment) ->
+  true if (location.xAxis <= environment.worldSize.xAxis) and (location.yAxis <= environment.worldSize.yAxis) and (location.xAxis >= 0) and (location.yAxis >= 0)
 
 # calculates estimated distance to the destination co-ordinates from current co-ordinates in absolute terms, ignoring diagonal moves and obstacles
 calculateHCost = (currentLocation, destination) ->
   (Math.abs(destination.xAxis - currentLocation.xAxis) * 10) + (Math.abs(destination.yAxis - currentLocation.yAxis) * 10)
 
 # returns point object from the openList with the lowest fCost
-findPointWithLowestFCost = (openList) ->
-  pointWithLowestFCost = undefined
-  _.map openList, (element) ->
-    pointWithLowestFCost = if pointWithLowestFCost is undefined or element.fCost < pointWithLowestFCost.fCost then element
-  pointWithLowestFCost
+findLocationWithLowestFCost = (openList) ->
+  locationWithLowestFCost = undefined
+  _.map openList, (location) ->
+    locationWithLowestFCost = if locationWithLowestFCost is undefined or location.fCost < locationWithLowestFCost.fCost then location
+  locationWithLowestFCost
 
-sameCoordinates = (pointA, pointB) ->
+sameLocation = (pointA, pointB) ->
   if pointA and pointB then pointA.xAxis == pointB.xAxis and pointA.yAxis == pointB.yAxis
 
-removeCoordinateFrom = (list, coordinate) ->
-  _.reject list, (coordinate) ->
-    coordinate.xAxis == coordinate.xAxis and coordinate.yAxis == coordinate.yAxis
+removeLocationFrom = (list, location) ->
+  _.reject list, (location) ->
+    location.xAxis == location.xAxis and location.yAxis == location.yAxis
 
-updateCoordinateCosts = (openListCoordinate, location, destination) ->
-  openListCoordinate.parentID = location.parentID
-  openListCoordinate.gCost = location.gCost
-  openListCoordinate.fCost = location.fCost
-  openListCoordinate
+updateLocationCosts = (openListLocation, location, destination) ->
+  openListLocation.parentID = location.parentID
+  openListLocation.gCost = location.gCost
+  openListLocation.fCost = location.fCost
+  openListLocation
 
-createOpenListCoordinate = (input, location, destination, IDCounter) ->
+createOpenListLocation = (input, location, destination, IDCounter) ->
   point =
     id: IDCounter
     parentID: input.parentID
@@ -68,22 +68,22 @@ exports.run = (destination, startPosition, environment) ->
   currentLocation = {}      # updated and compared with the destination on each iteration
   IDCounter = 0             # unique ID for coordinates
 
-  openList.push createOpenListCoordinate({parentID: 0, gCost: 0}, startPosition, destination, IDCounter)
+  openList.push createOpenListLocation({parentID: 0, gCost: 0}, startPosition, destination, IDCounter)
 
-  while sameCoordinates(currentLocation, destination) is false
-    currentLocation = findPointWithLowestFCost openList
-    openList = removeCoordinateFrom(openList, currentLocation)
+  while sameLocation(currentLocation, destination) is false
+    currentLocation = findLocationWithLowestFCost openList
+    openList = removeLocationFrom(openList, currentLocation)
     closedList.push currentLocation
 
-    adjacentLocations = validateCoordinates getAdjacentCoordinates(currentLocation), environment
+    adjacentLocations = validateLocations(getAdjacentLocations(currentLocation), environment)
     adjacentLocations = _.map adjacentLocations, (location) ->
       IDCounter++
-      createOpenListCoordinate({parentID: currentLocation.id, gCost: currentLocation.gCost + location.cost}, location, destination, IDCounter)
+      createOpenListLocation({parentID: currentLocation.id, gCost: currentLocation.gCost + location.cost}, location, destination, IDCounter)
 
     for location in adjacentLocations
-      for openListCoordinate in openList
-        if sameCoordinates(openListCoordinate, location) and location.gCost < openListCoordinate.gCost
-          openListCoordinate = updateCoordinateCosts(openListCoordinate, location, destination)
+      for openListLocation in openList
+        if sameLocation(openListLocation, location) and location.gCost < openListLocation.gCost
+          openListLocation = updateLocationCosts(openListLocation, location, destination)
         else
           openList.push location
   closedList

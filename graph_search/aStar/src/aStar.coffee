@@ -62,7 +62,7 @@ createOpenListCoordinate = (input, location, destination, IDCounter) ->
     gCost: input.gCost
     hCost: calculateHCost location, destination
   point.fCost = point.gCost + point.hCost
-  IDCounter++
+
   point
 
 exports.run = (destination, startPosition, environment) ->
@@ -80,7 +80,8 @@ exports.run = (destination, startPosition, environment) ->
 
     adjacentLocations = validateCoordinates getAdjacentCoordinates(currentLocation), environment
     adjacentLocations = _.map adjacentLocations, (location) ->
-      createOpenListCoordinate({parentID: currentLocation.id, gCost: currentLocation.gCost + location.gCost}, location, destination, IDCounter)
+      IDCounter++
+      createOpenListCoordinate({parentID: currentLocation.id, gCost: currentLocation.gCost + location.cost}, location, destination, IDCounter)
 
     for location in adjacentLocations
       for openListCoordinate in openList

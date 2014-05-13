@@ -41,8 +41,7 @@ sameLocation = (pointA, pointB) ->
   if pointA and pointB then pointA.xAxis == pointB.xAxis and pointA.yAxis == pointB.yAxis
 
 removeLocationFrom = (list, location) ->
-  _.reject list, (location) ->
-    location.xAxis == location.xAxis and location.yAxis == location.yAxis
+  _.reject list, (el) -> el.xAxis == location.xAxis and el.yAxis == location.yAxis
 
 updateLocationCosts = (openListLocation, location, destination) ->
   openListLocation.parentID = location.parentID

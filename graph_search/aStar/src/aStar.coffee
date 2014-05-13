@@ -66,8 +66,7 @@ exports.run = (destination, startPosition, environment) ->
   closedList = []           # list of coordinates that form part of the shortest path
   currentLocation = {}      # updated and compared with the destination on each iteration
   IDCounter = 0             # unique ID for coordinates
-
-  openList.push createOpenListLocation({parentID: 0, gCost: 0}, startPosition, destination, IDCounter)
+  openList.push createOpenListLocation({parentID: 0, gCost: 0}, startPosition, destination, IDCounter) # add startPosition
 
   while sameLocation(currentLocation, destination) is false
     currentLocation = findLocationWithLowestFCost openList
@@ -79,10 +78,12 @@ exports.run = (destination, startPosition, environment) ->
       IDCounter++
       createOpenListLocation({parentID: currentLocation.id, gCost: currentLocation.gCost + location.cost}, location, destination, IDCounter)
 
+    # check if adjacents already exist in open list
     for location in adjacentLocations
-      for openListLocation in openList
-        if sameLocation(openListLocation, location) and location.gCost < openListLocation.gCost
-          openListLocation = updateLocationCosts(openListLocation, location, destination)
-        else
-          openList.push location
+      openListMatch = _.find(openList, (el) -> el.yAxis == location.yAxis && el.xAxis == location.yAxis)
+      if openListMatch and location.gCost < openListMatch.gCost
+        openList = removeLocationFrom(openList, openListMatch)
+        openList.push location
+      else
+        openList.push location
   closedList

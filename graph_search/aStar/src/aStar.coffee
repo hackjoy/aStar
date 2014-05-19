@@ -47,6 +47,9 @@ createOpenListLocation = (newLocation, parentLocation, destination) ->
   point.fCost = point.gCost + point.hCost
   point
 
+existsInClosedList = (closedList, location) ->
+  _.find(closedList, (el) -> el.yAxis == location.yAxis and el.xAxis == location.xAxis)
+
 exports.run = (destination, startPosition, environment) ->
   openList = []             # list of coordinates that have been found but not yet explored
   closedList = []           # list of coordinates that form part of the shortest path
@@ -64,7 +67,7 @@ exports.run = (destination, startPosition, environment) ->
 
     # check if adjacents exist in openList or closedList
     for location in adjacentLocations
-      if not _.find(closedList, (el) -> el.yAxis == location.yAxis and el.xAxis == location.xAxis)
+      if not existsInClosedList
         openListMatch = _.find(openList, (el) -> el.yAxis == location.yAxis and el.xAxis == location.xAxis)
         if openListMatch and location.gCost < openListMatch.gCost
           openList = removeLocationFrom(openList, openListMatch) # remove the old location and add the new one with updated costs

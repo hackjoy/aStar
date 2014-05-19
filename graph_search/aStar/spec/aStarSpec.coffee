@@ -88,10 +88,10 @@ describe "aStar search", ->
       startCoordinates = {xAxis: 1, yAxis: 1}
       environment = {walls: [], worldSize: {xAxis: 10, yAxis: 10}}
       result = aStar.run(destination, startCoordinates, environment)
-      expectedResult = [{id: 0, xAxis: 1, yAxis: 1, gCost: 0, hCost: 30, fCost: 30, parentID: 0},
-                        {id: 2, xAxis: 1, yAxis: 2, gCost: 10, hCost: 20, fCost: 30, parentID: 0},
-                        {id: 10, xAxis: 1, yAxis: 3, gCost: 20, hCost: 10, fCost: 30, parentID: 2},
-                        {id: 18, xAxis: 1, yAxis: 4, gCost: 30, hCost: 0, fCost: 30, parentID: 10}
+      expectedResult = [{xAxis: 1, yAxis: 1, gCost: 0, hCost: 30, fCost: 30, parent: {xAxis: 1, yAxis: 1}},
+                        {xAxis: 1, yAxis: 2, gCost: 10, hCost: 20, fCost: 30, parent: {xAxis: 1, yAxis: 1}},
+                        {xAxis: 1, yAxis: 3, gCost: 20, hCost: 10, fCost: 30, parent: {xAxis: 1, yAxis: 2}},
+                        {xAxis: 1, yAxis: 4, gCost: 30, hCost: 0, fCost: 30, parent: {xAxis: 1, yAxis: 3}}
 
       ]
       expect(result).toEqual(expectedResult)

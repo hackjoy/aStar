@@ -43,20 +43,13 @@ sameLocation = (pointA, pointB) ->
 removeLocationFrom = (list, location) ->
   _.reject list, (el) -> el.xAxis == location.xAxis and el.yAxis == location.yAxis
 
-updateLocationCosts = (openListLocation, location, destination) ->
-  openListLocation.parentID = location.parentID
-  openListLocation.gCost = location.gCost
-  openListLocation.fCost = location.fCost
-  openListLocation
-
-createOpenListLocation = (input, location, destination, IDCounter) ->
+createOpenListLocation = (newLocation, parentLocation, destination) ->
   point =
-    id: IDCounter
-    parentID: input.parentID
-    xAxis: location.xAxis
-    yAxis: location.yAxis
-    gCost: input.gCost
-    hCost: calculateHCost location, destination
+    parent: {xAxis: parentLocation.xAxis, yAxis: parentLocation.yAxis}
+    xAxis: newLocation.xAxis
+    yAxis: newLocation.yAxis
+    gCost: parentLocation.gCost + newLocation.cost || 0
+    hCost: calculateHCost newLocation, destination
   point.fCost = point.gCost + point.hCost
   point
 
@@ -64,8 +57,7 @@ exports.run = (destination, startPosition, environment) ->
   openList = []             # list of coordinates that have been found but not yet explored
   closedList = []           # list of coordinates that form part of the shortest path
   currentLocation = {}      # updated and compared with the destination on each iteration
-  IDCounter = 0             # unique ID for coordinates
-  openList.push createOpenListLocation({parentID: 0, gCost: 0}, startPosition, destination, IDCounter) # add startPosition
+  openList.push createOpenListLocation(startPosition, startPosition, destination) # add startPosition with itself as parent
 
   while sameLocation(currentLocation, destination) is false
     currentLocation = findLocationWithLowestFCost openList
@@ -74,8 +66,7 @@ exports.run = (destination, startPosition, environment) ->
 
     adjacentLocations = validateLocations(getAdjacentLocations(currentLocation), environment)
     adjacentLocations = _.map adjacentLocations, (location) ->
-      IDCounter++
-      createOpenListLocation({parentID: currentLocation.id, gCost: currentLocation.gCost + location.cost}, location, destination, IDCounter)
+      createOpenListLocation(location, currentLocation, destination)
 
     # check if adjacents exist in openList or closedList
     for location in adjacentLocations

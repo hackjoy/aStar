@@ -14,8 +14,8 @@ getAdjacentLocations = (currentLocation) ->
 
 # receives an array of coordinate objects e.g. [{xAxis: 2, yAxis: 3}, {xAxis: 3, yAxis: 2} ... ] and returns new array of *valid* coordinate objects based on the environment
 validateLocations = (adjacentLocations, environment) ->
-  _.filter(adjacentLocations, (location) ->
-    withinWorldBoundary(location, environment) and not _.find(environment.walls, (wall) -> wall.yAxis == location.yAxis and wall.xAxis == location.xAxis))
+  _.filter adjacentLocations, (location) ->
+    withinWorldBoundary location, environment and not _.find environment.walls, (wall) -> wall.yAxis == location.yAxis and wall.xAxis == location.xAxis
 
 withinWorldBoundary = (location, environment) ->
   if (location.xAxis <= environment.worldSize.xAxis) and (location.yAxis <= environment.worldSize.yAxis) and (location.xAxis >= 0) and (location.yAxis >= 0) then true else false

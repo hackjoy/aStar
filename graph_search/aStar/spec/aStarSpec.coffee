@@ -84,8 +84,8 @@ describe "aStar search", ->
   describe "aStar search", ->
 
     it "Simple case: should return the shortest path given a destination, starting point and environment", ->
-      destination = {xAxis: 1, yAxis: 4}
       startCoordinates = {xAxis: 1, yAxis: 1}
+      destination = {xAxis: 1, yAxis: 4}
       environment = {walls: [], worldSize: {xAxis: 10, yAxis: 10}}
       result = aStar.run(destination, startCoordinates, environment)
       expectedResult = [{xAxis: 1, yAxis: 1, gCost: 0, hCost: 30, fCost: 30, parent: {xAxis: 1, yAxis: 1}},

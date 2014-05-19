@@ -14,14 +14,8 @@ getAdjacentLocations = (currentLocation) ->
 
 # receives an array of coordinate objects e.g. [{xAxis: 2, yAxis: 3}, {xAxis: 3, yAxis: 2} ... ] and returns new array of *valid* coordinate objects based on the environment
 validateLocations = (adjacentLocations, environment) ->
-  validatedLocations = []
-  _.each adjacentLocations, (location) ->
-    if withinWorldBoundary(location, environment)
-      valid = true
-      _.each environment.walls, (wall) ->
-        if (location.xAxis == wall.xAxis and location.yAxis == wall.yAxis) then valid = false
-      validatedLocations.push location if valid is true
-  validatedLocations
+  _.filter(adjacentLocations, (location) ->
+    withinWorldBoundary(location, environment) and not _.find(environment.walls, (wall) -> wall.yAxis == location.yAxis and wall.xAxis == location.xAxis))
 
 withinWorldBoundary = (location, environment) ->
   if (location.xAxis <= environment.worldSize.xAxis) and (location.yAxis <= environment.worldSize.yAxis) and (location.xAxis >= 0) and (location.yAxis >= 0) then true else false
@@ -73,7 +67,7 @@ exports.run = (destination, startPosition, environment) ->
       if not _.find(closedList, (el) -> el.yAxis == location.yAxis and el.xAxis == location.xAxis)
         openListMatch = _.find(openList, (el) -> el.yAxis == location.yAxis and el.xAxis == location.xAxis)
         if openListMatch and location.gCost < openListMatch.gCost
-          openList = removeLocationFrom(openList, openListMatch)
+          openList = removeLocationFrom(openList, openListMatch) # remove the old location and add the new one with updated costs
           openList.push location
         else
           openList.push location

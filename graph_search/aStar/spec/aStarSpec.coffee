@@ -81,17 +81,17 @@ describe "aStar search", ->
 
     # it "should recalculate costs when a better path has been found to a coordinate", ->
 
-  describe "integration tests", ->
+  describe "aStar search", ->
 
-    it "simple case: should return the shortest path given a destination, starting point and environment", ->
+    it "Simple case: should return the shortest path given a destination, starting point and environment", ->
       destination = {xAxis: 1, yAxis: 4}
       startCoordinates = {xAxis: 1, yAxis: 1}
       environment = {walls: [], worldSize: {xAxis: 10, yAxis: 10}}
       result = aStar.run(destination, startCoordinates, environment)
       expectedResult = [{id: 0, xAxis: 1, yAxis: 1, gCost: 0, hCost: 30, fCost: 30, parentID: 0},
-                        {id: 1, xAxis: 1, yAxis: 2, gCost: 10, hCost: 20, fCost: 30, parentID: 0},
-                        {id: 2, xAxis: 1, yAxis: 3, gCost: 20, hCost: 10, fCost: 30, parentID: 1},
-                        {id: 3, xAxis: 1, yAxis: 4, gCost: 30, hCost: 0, fCost: 30, parentID: 2}
+                        {id: 2, xAxis: 1, yAxis: 2, gCost: 10, hCost: 20, fCost: 30, parentID: 0},
+                        {id: 10, xAxis: 1, yAxis: 3, gCost: 20, hCost: 10, fCost: 30, parentID: 2},
+                        {id: 18, xAxis: 1, yAxis: 4, gCost: 30, hCost: 0, fCost: 30, parentID: 10}
 
       ]
       expect(result).toEqual(expectedResult)

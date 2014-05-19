@@ -24,7 +24,7 @@ validateLocations = (adjacentLocations, environment) ->
   validatedLocations
 
 withinWorldBoundary = (location, environment) ->
-  true if (location.xAxis <= environment.worldSize.xAxis) and (location.yAxis <= environment.worldSize.yAxis) and (location.xAxis >= 0) and (location.yAxis >= 0)
+  if (location.xAxis <= environment.worldSize.xAxis) and (location.yAxis <= environment.worldSize.yAxis) and (location.xAxis >= 0) and (location.yAxis >= 0) then true else false
 
 # calculates estimated distance to the destination co-ordinates from current co-ordinates in absolute terms, ignoring diagonal moves and obstacles
 calculateHCost = (currentLocation, destination) ->
@@ -34,11 +34,11 @@ calculateHCost = (currentLocation, destination) ->
 findLocationWithLowestFCost = (openList) ->
   locationWithLowestFCost = undefined
   _.map openList, (location) ->
-    locationWithLowestFCost = if locationWithLowestFCost is undefined or location.fCost < locationWithLowestFCost.fCost then location
+    locationWithLowestFCost = if locationWithLowestFCost is undefined or location.fCost < locationWithLowestFCost.fCost then location else locationWithLowestFCost
   locationWithLowestFCost
 
 sameLocation = (pointA, pointB) ->
-  if pointA and pointB then pointA.xAxis == pointB.xAxis and pointA.yAxis == pointB.yAxis
+  if pointA and pointB then pointA.xAxis == pointB.xAxis and pointA.yAxis == pointB.yAxis else false
 
 removeLocationFrom = (list, location) ->
   _.reject list, (el) -> el.xAxis == location.xAxis and el.yAxis == location.yAxis
@@ -58,7 +58,6 @@ createOpenListLocation = (input, location, destination, IDCounter) ->
     gCost: input.gCost
     hCost: calculateHCost location, destination
   point.fCost = point.gCost + point.hCost
-
   point
 
 exports.run = (destination, startPosition, environment) ->
@@ -78,12 +77,13 @@ exports.run = (destination, startPosition, environment) ->
       IDCounter++
       createOpenListLocation({parentID: currentLocation.id, gCost: currentLocation.gCost + location.cost}, location, destination, IDCounter)
 
-    # check if adjacents already exist in open list
+    # check if adjacents exist in openList or closedList
     for location in adjacentLocations
-      openListMatch = _.find(openList, (el) -> el.yAxis == location.yAxis && el.xAxis == location.yAxis)
-      if openListMatch and location.gCost < openListMatch.gCost
-        openList = removeLocationFrom(openList, openListMatch)
-        openList.push location
-      else
-        openList.push location
-  closedList
+      if not _.find(closedList, (el) -> el.yAxis == location.yAxis and el.xAxis == location.xAxis)
+        openListMatch = _.find(openList, (el) -> el.yAxis == location.yAxis and el.xAxis == location.xAxis)
+        if openListMatch and location.gCost < openListMatch.gCost
+          openList = removeLocationFrom(openList, openListMatch)
+          openList.push location
+        else
+          openList.push location
+  return closedList

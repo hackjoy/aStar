@@ -14,8 +14,12 @@ getAdjacentLocations = (currentLocation) ->
 
 # receives an array of coordinate objects e.g. [{xAxis: 2, yAxis: 3}, {xAxis: 3, yAxis: 2} ... ] and returns new array of *valid* coordinate objects based on the environment
 validateLocations = (adjacentLocations, environment) ->
-  _.filter adjacentLocations, (location) ->
-    withinWorldBoundary location, environment and not _.find environment.walls, (wall) -> wall.yAxis == location.yAxis and wall.xAxis == location.xAxis
+  validLocations = _.filter adjacentLocations, (location) ->
+    withinWorldBoundary location, environment
+  if environment.walls
+    _.filter validLocations, (location) ->
+      not _.find environment.walls, (wall) -> wall.yAxis == location.yAxis and wall.xAxis == location.xAxis
+  validLocations
 
 withinWorldBoundary = (location, environment) ->
   if (location.xAxis <= environment.worldSize.xAxis) and (location.yAxis <= environment.worldSize.yAxis) and (location.xAxis >= 0) and (location.yAxis >= 0) then true else false
@@ -50,28 +54,27 @@ createOpenListLocation = (newLocation, parentLocation, destination) ->
 existsInClosedList = (closedList, location) ->
   _.find(closedList, (el) -> el.yAxis == location.yAxis and el.xAxis == location.xAxis)
 
+updateOpenList = (openList, location) ->
+  openListMatch = _.find(openList, (el) -> el.yAxis == location.yAxis and el.xAxis == location.xAxis)
+  if not openListMatch
+    openList.push location
+  else if openListMatch.gCost > location.gCost
+    openList = removeLocationFrom(openList, openListMatch)
+    openList.push location
+  openList
+
 exports.run = (destination, startPosition, environment) ->
-  openList = []             # list of coordinates that have been found but not yet explored
+  openList = [createOpenListLocation(startPosition, startPosition, destination)]  # list of coordinates found but not explored - init with startPosition
   closedList = []           # list of coordinates that form part of the shortest path
   currentLocation = {}      # updated and compared with the destination on each iteration
-  openList.push createOpenListLocation(startPosition, startPosition, destination) # add startPosition with itself as parent
-
-  while sameLocation(currentLocation, destination) is false
+  while not sameLocation(currentLocation, destination)
     currentLocation = findLocationWithLowestFCost openList
     openList = removeLocationFrom(openList, currentLocation)
     closedList.push currentLocation
 
     adjacentLocations = validateLocations(getAdjacentLocations(currentLocation), environment)
-    adjacentLocations = _.map adjacentLocations, (location) ->
-      createOpenListLocation(location, currentLocation, destination)
-
-    # check if adjacents exist in openList or closedList
+    adjacentLocations = _.map adjacentLocations, (location) -> createOpenListLocation(location, currentLocation, destination)
     for location in adjacentLocations
-      if not existsInClosedList
-        openListMatch = _.find(openList, (el) -> el.yAxis == location.yAxis and el.xAxis == location.xAxis)
-        if openListMatch and location.gCost < openListMatch.gCost
-          openList = removeLocationFrom(openList, openListMatch) # remove the old location and add the new one with updated costs
-          openList.push location
-        else
-          openList.push location
+      if not existsInClosedList(closedList, location) then openList = updateOpenList(openList, location)
+
   return closedList

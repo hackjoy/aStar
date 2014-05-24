@@ -71,8 +71,8 @@ updateOpenList = (openList, location, closedList) ->
       openList.push location
   openList
 
-run = (destination, startPosition, environment) ->
-  openList = [createOpenListLocation(startPosition, startPosition, destination)] # coordinates found but not explored yet - init with startPosition
+run = (startLocation, destination, environment) ->
+  openList = [createOpenListLocation(startLocation, startLocation, destination)] # coordinates found but not explored yet - init with startLocation
   closedList = [] # coorindates explored which form the shortest path
   currentLocation = {} # updated and compared with the destination on each iteration
   while not sameLocation currentLocation, destination

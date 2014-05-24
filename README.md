@@ -18,7 +18,7 @@ environment = {walls: [{xAxis: 2, yAxis: 1}, {xAxis: 2, yAxis: 2}, {xAxis: 2, yA
 ```
 
 Call the run method passing in the parameters defined above:
-`aStar.run(destination, startCoordinates, environment)`
+`aStar.run(startLocation, destination, environment)`
 
 This returns the following shortest path:
 ```
@@ -27,6 +27,21 @@ This returns the following shortest path:
  {xAxis: 3, yAxis: 1, gCost: 28, hCost: 10, fCost: 38, parent: {xAxis: 2, yAxis: 0}},
  {xAxis: 4, yAxis: 1, gCost: 38, hCost: 0, fCost: 38, parent: {xAxis: 3, yAxis: 1}}
 ]
+```
+
+Visual representation:
+```
+ . . . . . . . . . .
+ . . . . . . . . . .
+ . . . . . . . . . .
+ . . . . . . . . . .
+ . . . . . . . . . .
+ . . . . . . . . . .
+ . . . . . . . . . .
+ . . w . . . . . . .
+ . . w . . . . . . .
+ . x w x X . . . . .
+ . . x . . . . . . .
 ```
 
 ### Running the test suite

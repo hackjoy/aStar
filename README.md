@@ -5,12 +5,12 @@ A special case of best-first graph search that uses heuristics to improve speed.
 
 ### Usage
 
-Add `aStar` to your package.json and run `$ npm install`
+Add `a-star-search` to your package.json and run `$ npm install`
 
 Require aStar in your app and define the parameters of your 2D grid:
 
 ```
-`require 'aStar'`
+`aStar = require 'a-star-search'`
 startLocation = {xAxis: 1, yAxis: 1}
 destination = {xAxis: 4, yAxis: 1}
 environment = {walls: [{xAxis: 2, yAxis: 1}, {xAxis: 2, yAxis: 2}, {xAxis: 2, yAxis: 3}], worldSize: {xAxis: 10, yAxis: 10}}

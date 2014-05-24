@@ -1,5 +1,1 @@
-# aStar for node
-#
-# MIT Licensed
-
-module.exports = require 'src/aStar'
+module.exports = require './src/aStar.js'

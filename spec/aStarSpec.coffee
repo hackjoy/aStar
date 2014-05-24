@@ -1,5 +1,4 @@
 require './specHelper'
-process.env.NODE_ENV = 'development' # export all functions for testing purposes
 aStar = require '../src/aStar'
 
 describe "aStar search", ->

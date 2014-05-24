@@ -6,7 +6,7 @@ A special case of best-first graph search that uses heuristics to improve speed.
 
 ```
 $ npm install
-$ grunt && jasmine-node spec/aStarSpec.js
+$ grunt && NODE_ENV=development jasmine-node spec/aStarSpec.js
 ```
 
 ##### Inspired by:

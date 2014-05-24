@@ -1,6 +1,6 @@
 ## A* Search
 
-A special case of best-first graph search that uses heuristics to improve speed.  Works with 2D grids and can currently supports walls as obstacles within the environment. Written in CoffeeScript.
+A special case of best-first graph search that uses heuristics to improve speed.  Works with 2D grids and currently only supports walls as obstacles within the environment. Written in CoffeeScript.
 
 
 ### Usage
@@ -14,7 +14,6 @@ aStar = require 'a-star-search'
 startLocation = {xAxis: 1, yAxis: 1}
 destination = {xAxis: 4, yAxis: 1}
 environment = {walls: [{xAxis: 2, yAxis: 1}, {xAxis: 2, yAxis: 2}, {xAxis: 2, yAxis: 3}], worldSize: {xAxis: 10, yAxis: 10}}
-
 ```
 
 Call the run method passing in the parameters defined above:

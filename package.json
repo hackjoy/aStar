@@ -1,6 +1,6 @@
 {
   "name": "a-star-search",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "private": false,
   "author": "Jack Hoy <jackhoy05@gmail.com>",
   "keywords": ["astar", "star", "search", "game", "shortest", "path", "pathfinding", "graph", "movement", "map"],

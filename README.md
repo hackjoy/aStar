@@ -18,6 +18,7 @@ environment = {walls: [{xAxis: 2, yAxis: 1}, {xAxis: 2, yAxis: 2}, {xAxis: 2, yA
 ```
 
 Call the run method passing in the parameters defined above:
+
 `aStar.run(startLocation, destination, environment)`
 
 This returns the following shortest path:
@@ -31,17 +32,19 @@ This returns the following shortest path:
 
 Visual representation:
 ```
- . . . . . . . . . .
- . . . . . . . . . .
- . . . . . . . . . .
- . . . . . . . . . .
- . . . . . . . . . .
- . . . . . . . . . .
- . . . . . . . . . .
- . . w . . . . . . .
- . . w . . . . . . .
- . x w x X . . . . .
- . . x . . . . . . .
+y
+10 . . . . . . . . . . .
+ 9 . . . . . . . . . . .
+ 8 . . . . . . . . . . .
+ 7 . . . . . . . . . . .
+ 6 . . . . . . . . . . .
+ 5 . . . . . . . . . . .
+ 4 . . . . . . . . . . .
+ 3 . . w . . . . . . . .
+ 2 . . w . . . . . . . .
+ 1 . x w x X . . . . . .
+ 0 . . x . . . . . . . .
+   0 1 2 3 4 5 6 7 8 9 10 x
 ```
 
 ### Running the test suite

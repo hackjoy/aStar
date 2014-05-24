@@ -17,7 +17,7 @@ validateLocations = (adjacentLocations, environment) ->
   validLocations = _.filter adjacentLocations, (location) ->
     withinWorldBoundary location, environment
   if environment.walls
-    _.filter validLocations, (location) ->
+    validLocations = _.filter validLocations, (location) ->
       not _.find environment.walls, (wall) -> wall.yAxis == location.yAxis and wall.xAxis == location.xAxis
   validLocations
 
@@ -57,7 +57,7 @@ existsInClosedList = (closedList, location) ->
   _.find closedList, (el) -> el.yAxis == location.yAxis and el.xAxis == location.xAxis
 
 updateOpenList = (openList, location, closedList) ->
-  if not existsInClosedList(closedList, location)
+  if not existsInClosedList closedList, location
     openListMatch = _.find(openList, (el) -> el.yAxis == location.yAxis and el.xAxis == location.xAxis)
     if not openListMatch
       openList.push location
@@ -73,7 +73,7 @@ getAdjacentLocations = (currentLocation, environment, destination) ->
 
 exports.run = (destination, startPosition, environment) ->
   openList = [createOpenListLocation(startPosition, startPosition, destination)] # coordinates found but not explored yet - init with startPosition
-  closedList = [] # coorindates explored forming part of the shortest path
+  closedList = [] # coorindates explored which form the shortest path
   currentLocation = {} # updated and compared with the destination on each iteration
   while not sameLocation currentLocation, destination
     currentLocation = findLocationWithLowestFCost openList
@@ -83,3 +83,5 @@ exports.run = (destination, startPosition, environment) ->
     for location in adjacentLocations
       openList = updateOpenList openList, location, closedList
   return closedList
+
+# module.exports.

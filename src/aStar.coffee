@@ -12,7 +12,7 @@ generateAdjacentLocations = (currentLocation) ->
   , currentLocation)
   adjacentLocations
 
-# receives an array of coordinate objects e.g. [{xAxis: 2, yAxis: 3}, {xAxis: 3, yAxis: 2} ... ] and returns new array of *valid* coordinate objects based on the environment
+# receives an array of location objects e.g. [{xAxis: 2, yAxis: 3}, {xAxis: 3, yAxis: 2} ... ] and returns new array of *valid* coordinate objects based on the environment
 validateLocations = (adjacentLocations, environment) ->
   validLocations = _.filter adjacentLocations, (location) ->
     withinWorldBoundary location, environment
@@ -33,21 +33,21 @@ withinWorldBoundary = (location, environment) ->
 calculateHCost = (currentLocation, destination) ->
   (Math.abs(destination.xAxis - currentLocation.xAxis) * 10) + (Math.abs(destination.yAxis - currentLocation.yAxis) * 10)
 
-# returns point object from the openList with the lowest fCost
+# returns location object from the openList with the lowest fCost
 findLocationWithLowestFCost = (openList) ->
   locationWithLowestFCost = undefined
   _.map openList, (location) ->
     locationWithLowestFCost = if locationWithLowestFCost is undefined or location.fCost < locationWithLowestFCost.fCost then location else locationWithLowestFCost
   locationWithLowestFCost
 
-sameLocation = (pointA, pointB) ->
-  if pointA and pointB then pointA.xAxis == pointB.xAxis and pointA.yAxis == pointB.yAxis else false
+sameLocation = (locationA, locationB) ->
+  if locationA and locationB then locationA.xAxis == locationB.xAxis and locationA.yAxis == locationB.yAxis else false
 
 removeLocationFrom = (list, location) ->
   _.reject list, (el) -> el.xAxis == location.xAxis and el.yAxis == location.yAxis
 
 createOpenListLocation = (newLocation, parentLocation, destination) ->
-  point =
+  location =
     parent:
       xAxis: parentLocation.xAxis,
       yAxis: parentLocation.yAxis
@@ -55,8 +55,8 @@ createOpenListLocation = (newLocation, parentLocation, destination) ->
     yAxis: newLocation.yAxis
     gCost: parentLocation.gCost + newLocation.cost || 0
     hCost: calculateHCost newLocation, destination
-  point.fCost = point.gCost + point.hCost
-  point
+  location.fCost = location.gCost + location.hCost
+  location
 
 existsInClosedList = (closedList, location) ->
   _.find closedList, (el) -> el.yAxis == location.yAxis and el.xAxis == location.xAxis

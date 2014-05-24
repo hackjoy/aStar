@@ -4,16 +4,16 @@ aStar = require '../src/aStar'
 
 describe "aStar search", ->
 
-  describe "coordinates", ->
-
-    environment = destination = undefined
+  describe "generating and validating coordinates", ->
+    # init shared test varibles
+    environment = currentLocation = destination = undefined
 
     beforeEach ->
+      currentLocation = {xAxis: 2, yAxis: 1}
       environment = {walls: [], worldSize: {xAxis: 10, yAxis: 10}}
       destination = {xAxis: 4, yAxis: 1}
 
     it 'should generate adjacent coordinates to the current location', ->
-      currentLocation = {xAxis: 2, yAxis: 1}
       adjacentLocations = aStar.generateAdjacentLocations(currentLocation)
       expectedAdjacentLocations = [{xAxis: 1, yAxis: 2, cost: 14}, {xAxis: 2, yAxis: 2, cost: 10}, {xAxis: 3, yAxis: 2, cost: 14},
                                    {xAxis: 1, yAxis: 1, cost: 10},                                 {xAxis: 3, yAxis: 1, cost: 10},
@@ -25,33 +25,33 @@ describe "aStar search", ->
                            {xAxis: 1, yAxis: 1, cost: 10},                                 {xAxis: 3, yAxis: 1, cost: 10},
                            {xAxis: 1, yAxis: 0, cost: 14}, {xAxis: 2, yAxis: 0, cost: 10}, {xAxis: 3, yAxis: 0, cost: 14}]
       expectedValidLocations = [{xAxis: 1, yAxis: 2, cost: 14}, {xAxis: 2, yAxis: 2, cost: 10}, {xAxis: 3, yAxis: 2, cost: 14},
-                                  {xAxis: 1, yAxis: 1, cost: 10},                                 {xAxis: 3, yAxis: 1, cost: 10},
-                                  {xAxis: 1, yAxis: 0, cost: 14}, {xAxis: 2, yAxis: 0, cost: 10}, {xAxis: 3, yAxis: 0, cost: 14}]
+                                {xAxis: 1, yAxis: 1, cost: 10},                                 {xAxis: 3, yAxis: 1, cost: 10},
+                                {xAxis: 1, yAxis: 0, cost: 14}, {xAxis: 2, yAxis: 0, cost: 10}, {xAxis: 3, yAxis: 0, cost: 14}]
       validLocations = aStar.validateLocations(adjacentLocations, environment)
       expect(validLocations).toEqual(expectedValidLocations)
 
-  #   it 'should not return coordinates that are walls', ->
-  #     adjacentCoordinates = [{xAxis: 1, yAxis: 2, cost: 14}, {xAxis: 2, yAxis: 2, cost: 10}, {xAxis: 3, yAxis: 2, cost: 14},
-  #                            {xAxis: 1, yAxis: 1, cost: 10},                                 {xAxis: 3, yAxis: 1, cost: 10},
-  #                            {xAxis: 1, yAxis: 0, cost: 14}, {xAxis: 2, yAxis: 0, cost: 10}, {xAxis: 3, yAxis: 0, cost: 14}]
-  #     # expected coordinates do not include North West as it is a wall
-  #     expectedValidCoordinates = [{xAxis: 1, yAxis: 2, cost: 14}, {xAxis: 2, yAxis: 2, cost: 10},
-  #                                 {xAxis: 1, yAxis: 1, cost: 10},                                 {xAxis: 3, yAxis: 1, cost: 10},
-  #                                 {xAxis: 1, yAxis: 0, cost: 14}, {xAxis: 2, yAxis: 0, cost: 10}, {xAxis: 3, yAxis: 0, cost: 14}]
-  #     environment = {walls: [{xAxis: 3, yAxis: 2}], worldSize: {xAxis: 5, yAxis: 5}}
-  #     validCoordinates = aStar.validateCoordinates(adjacentCoordinates, environment)
-  #     expect(validCoordinates).toEqual(expectedValidCoordinates)
+    it 'should not return coordinates that are walls', ->
+      adjacentLocations = [{xAxis: 1, yAxis: 2, cost: 14}, {xAxis: 2, yAxis: 2, cost: 10}, {xAxis: 3, yAxis: 2, cost: 14},
+                           {xAxis: 1, yAxis: 1, cost: 10},                                 {xAxis: 3, yAxis: 1, cost: 10},
+                           {xAxis: 1, yAxis: 0, cost: 14}, {xAxis: 2, yAxis: 0, cost: 10}, {xAxis: 3, yAxis: 0, cost: 14}]
+      # expected coordinates do not include North West as it is a wall
+      expectedValidLocations = [{xAxis: 1, yAxis: 2, cost: 14}, {xAxis: 2, yAxis: 2, cost: 10},
+                                {xAxis: 1, yAxis: 1, cost: 10},                                 {xAxis: 3, yAxis: 1, cost: 10},
+                                {xAxis: 1, yAxis: 0, cost: 14}, {xAxis: 2, yAxis: 0, cost: 10}, {xAxis: 3, yAxis: 0, cost: 14}]
+      environment.walls = [{xAxis: 3, yAxis: 2}]
+      validLocations = aStar.validateLocations(adjacentLocations, environment)
+      expect(validLocations).toEqual(expectedValidLocations)
 
-  #   it 'should not return coordinates that are outside the worldSize', ->
-  #     adjacentCoordinates =      [{xAxis: 1, yAxis: 2, cost: 14}, {xAxis: 2, yAxis: 2, cost: 10}, {xAxis: 3, yAxis: 2, cost: 14},
-  #                                 {xAxis: 1, yAxis: 1, cost: 10},                                 {xAxis: 3, yAxis: 1, cost: 10},
-  #                                 {xAxis: 1, yAxis: 0, cost: 14}, {xAxis: 2, yAxis: 0, cost: 10}, {xAxis: 3, yAxis: 0, cost: 14}]
-  #     expectedValidCoordinates = [{xAxis: 1, yAxis: 2, cost: 14}, {xAxis: 2, yAxis: 2, cost: 10},
-  #                                 {xAxis: 1, yAxis: 1, cost: 10},
-  #                                 {xAxis: 1, yAxis: 0, cost: 14}, {xAxis: 2, yAxis: 0, cost: 10}]
-  #     environment = {walls: [{}], worldSize: {xAxis: 2, yAxis: 2}}
-  #     validCoordinates = aStar.validateCoordinates(adjacentCoordinates, environment)
-  #     expect(validCoordinates).toEqual(expectedValidCoordinates)
+    it 'should not return coordinates that are outside the worldSize', ->
+      adjacentLocations = [{xAxis: 1, yAxis: 2, cost: 14}, {xAxis: 2, yAxis: 2, cost: 10}, {xAxis: 3, yAxis: 2, cost: 14},
+                           {xAxis: 1, yAxis: 1, cost: 10},                                 {xAxis: 3, yAxis: 1, cost: 10},
+                           {xAxis: 1, yAxis: 0, cost: 14}, {xAxis: 2, yAxis: 0, cost: 10}, {xAxis: 3, yAxis: 0, cost: 14}]
+      expectedValidLocations = [{xAxis: 1, yAxis: 2, cost: 14}, {xAxis: 2, yAxis: 2, cost: 10},
+                                {xAxis: 1, yAxis: 1, cost: 10},
+                                {xAxis: 1, yAxis: 0, cost: 14}, {xAxis: 2, yAxis: 0, cost: 10}]
+      environment.worldSize = {xAxis: 2, yAxis: 2}
+      validLocations = aStar.validateLocations(adjacentLocations, environment)
+      expect(validLocations).toEqual(expectedValidLocations)
 
   # describe "calculating costs", ->
 

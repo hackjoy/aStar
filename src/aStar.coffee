@@ -99,5 +99,5 @@ module.exports =
       existsInClosedList: existsInClosedList
       updateOpenList: updateOpenList
       run: run
-    when 'production'
+    else
       run: run

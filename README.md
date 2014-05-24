@@ -1,6 +1,6 @@
 ## A* Search
 
-A special case of best-first graph search that uses heuristics to improve speed.  Works with 2D grids and currently only supports walls as obstacles within the environment. Written in CoffeeScript.
+A special case of best-first graph search that uses heuristics to improve speed. Define your 2D grid then add any blocked coordinates to the environment that must be avoided when generating the shortest path. Written in CoffeeScript.
 
 
 ### Usage
@@ -13,7 +13,7 @@ Require aStar in your app and define the parameters of your 2D grid:
 aStar = require 'a-star-search'
 startLocation = {xAxis: 1, yAxis: 1}
 destination = {xAxis: 4, yAxis: 1}
-environment = {walls: [{xAxis: 2, yAxis: 1}, {xAxis: 2, yAxis: 2}, {xAxis: 2, yAxis: 3}], worldSize: {xAxis: 10, yAxis: 10}}
+environment = {blockedLocations: [{xAxis: 2, yAxis: 1}, {xAxis: 2, yAxis: 2}, {xAxis: 2, yAxis: 3}], worldSize: {xAxis: 10, yAxis: 10}}
 ```
 
 Call the run method passing in the parameters defined above:

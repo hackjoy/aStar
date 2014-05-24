@@ -16,9 +16,9 @@ generateAdjacentLocations = (currentLocation) ->
 validateLocations = (adjacentLocations, environment) ->
   validLocations = _.filter adjacentLocations, (location) ->
     withinWorldBoundary location, environment
-  if environment.walls
+  if environment.blockedLocations
     validLocations = _.filter validLocations, (location) ->
-      not _.find environment.walls, (wall) -> wall.yAxis == location.yAxis and wall.xAxis == location.xAxis
+      not _.find environment.blockedLocations, (blockLocation) -> blockLocation.yAxis == location.yAxis and blockLocation.xAxis == location.xAxis
   validLocations
 
 getAdjacentLocations = (currentLocation, environment, destination) ->

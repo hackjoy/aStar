@@ -9,7 +9,7 @@ describe "aStar search", ->
 
     beforeEach ->
       currentLocation = {xAxis: 2, yAxis: 1}
-      environment = {walls: [], worldSize: {xAxis: 10, yAxis: 10}}
+      environment = {blockedLocations: [], worldSize: {xAxis: 10, yAxis: 10}}
       destination = {xAxis: 4, yAxis: 1}
 
     it 'should generate adjacent coordinates to the current location', ->
@@ -37,7 +37,7 @@ describe "aStar search", ->
       expectedValidLocations = [{xAxis: 1, yAxis: 2, cost: 14}, {xAxis: 2, yAxis: 2, cost: 10},
                                 {xAxis: 1, yAxis: 1, cost: 10},                                 {xAxis: 3, yAxis: 1, cost: 10},
                                 {xAxis: 1, yAxis: 0, cost: 14}, {xAxis: 2, yAxis: 0, cost: 10}, {xAxis: 3, yAxis: 0, cost: 14}]
-      environment.walls = [{xAxis: 3, yAxis: 2}]
+      environment.blockedLocations = [{xAxis: 3, yAxis: 2}]
       validLocations = aStar.validateLocations(adjacentLocations, environment)
       expect(validLocations).toEqual(expectedValidLocations)
 
@@ -72,7 +72,7 @@ describe "aStar search", ->
     it "Easy Case A: should return the shortest path when travelling North with no obstacles", ->
       startLocation = {xAxis: 1, yAxis: 1}
       destination = {xAxis: 1, yAxis: 4}
-      environment = {walls: [], worldSize: {xAxis: 10, yAxis: 10}}
+      environment = {blockedLocations: [], worldSize: {xAxis: 10, yAxis: 10}}
       result = aStar.run(startLocation, destination, environment)
       expectedResult = [{xAxis: 1, yAxis: 1, gCost: 0, hCost: 30, fCost: 30, parent: {xAxis: 1, yAxis: 1}},
                         {xAxis: 1, yAxis: 2, gCost: 10, hCost: 20, fCost: 30, parent: {xAxis: 1, yAxis: 1}},

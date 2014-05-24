@@ -1,1 +1,1 @@
-module.exports = require './src/aStar.js'
+module.exports = require './src/aStar'

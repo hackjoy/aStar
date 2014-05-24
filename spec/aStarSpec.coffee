@@ -1,18 +1,24 @@
 require './specHelper'
-
+process.env.NODE_ENV = 'development' # export all functions for testing purposes
 aStar = require '../src/aStar'
 
 describe "aStar search", ->
 
-  # describe "generating coordinates", ->
+  describe "generating coordinates", ->
 
-  #   it 'should return adjacent coordinates to the current location', ->
-  #     currentLocation = {xAxis: 2, yAxis: 1}
-  #     adjacentCoordinates = aStar.getAdjacentCoordinates(currentLocation)
-  #     expectedAdjacentCoordinates = [{xAxis: 1, yAxis: 2, cost: 14}, {xAxis: 2, yAxis: 2, cost: 10}, {xAxis: 3, yAxis: 2, cost: 14},
-  #                                    {xAxis: 1, yAxis: 1, cost: 10},                                 {xAxis: 3, yAxis: 1, cost: 10},
-  #                                    {xAxis: 1, yAxis: 0, cost: 14}, {xAxis: 2, yAxis: 0, cost: 10}, {xAxis: 3, yAxis: 0, cost: 14}]
-  #     expect(adjacentCoordinates).toEqual(expectedAdjacentCoordinates)
+    environment = destination = undefined
+
+    beforeEach ->
+      environment = {walls: [], worldSize: {xAxis: 10, yAxis: 10}}
+      destination = {xAxis: 4, yAxis: 1}
+
+    it 'should return adjacent coordinates to the current location', ->
+      currentLocation = {xAxis: 2, yAxis: 1}
+      adjacentLocations = aStar.generateAdjacentLocations(currentLocation)
+      expectedAdjacentLocations = [{xAxis: 1, yAxis: 2, cost: 14}, {xAxis: 2, yAxis: 2, cost: 10}, {xAxis: 3, yAxis: 2, cost: 14},
+                                   {xAxis: 1, yAxis: 1, cost: 10},                                 {xAxis: 3, yAxis: 1, cost: 10},
+                                   {xAxis: 1, yAxis: 0, cost: 14}, {xAxis: 2, yAxis: 0, cost: 10}, {xAxis: 3, yAxis: 0, cost: 14}]
+      expect(adjacentLocations).toEqual(expectedAdjacentLocations)
 
   # describe "validating coordinates", ->
 
@@ -81,7 +87,7 @@ describe "aStar search", ->
 
     # it "should recalculate costs when a better path has been found to a coordinate", ->
 
-  describe "aStar search", ->
+  describe "integration tests", ->
 
     it "Easy Case A: should return the shortest path when travelling North with no obstacles", ->
       startCoordinates = {xAxis: 1, yAxis: 1}

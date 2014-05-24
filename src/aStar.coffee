@@ -21,6 +21,11 @@ validateLocations = (adjacentLocations, environment) ->
       not _.find environment.walls, (wall) -> wall.yAxis == location.yAxis and wall.xAxis == location.xAxis
   validLocations
 
+getAdjacentLocations = (currentLocation, environment, destination) ->
+  adjacentLocations = validateLocations(generateAdjacentLocations(currentLocation), environment)
+  adjacentLocations = _.map adjacentLocations, (location) -> createOpenListLocation(location, currentLocation, destination)
+  adjacentLocations
+
 withinWorldBoundary = (location, environment) ->
   if (location.xAxis <= environment.worldSize.xAxis) and (location.yAxis <= environment.worldSize.yAxis) and (location.xAxis >= 0) and (location.yAxis >= 0) then true else false
 
@@ -66,12 +71,7 @@ updateOpenList = (openList, location, closedList) ->
       openList.push location
   openList
 
-getAdjacentLocations = (currentLocation, environment, destination) ->
-  adjacentLocations = validateLocations(generateAdjacentLocations(currentLocation), environment)
-  adjacentLocations = _.map adjacentLocations, (location) -> createOpenListLocation(location, currentLocation, destination)
-  adjacentLocations
-
-exports.run = (destination, startPosition, environment) ->
+run = (destination, startPosition, environment) ->
   openList = [createOpenListLocation(startPosition, startPosition, destination)] # coordinates found but not explored yet - init with startPosition
   closedList = [] # coorindates explored which form the shortest path
   currentLocation = {} # updated and compared with the destination on each iteration
@@ -84,4 +84,20 @@ exports.run = (destination, startPosition, environment) ->
       openList = updateOpenList openList, location, closedList
   return closedList
 
-# module.exports.
+module.exports =
+  switch process.env.NODE_ENV
+    when 'development'
+      generateAdjacentLocations: generateAdjacentLocations
+      validateLocations: validateLocations
+      getAdjacentLocations: getAdjacentLocations
+      withinWorldBoundary: withinWorldBoundary
+      calculateHCost: calculateHCost
+      findLocationWithLowestFCost: findLocationWithLowestFCost
+      sameLocation: sameLocation
+      removeLocationFrom: removeLocationFrom
+      createOpenListLocation: createOpenListLocation
+      existsInClosedList: existsInClosedList
+      updateOpenList: updateOpenList
+      run: run
+    when 'production'
+      run: run

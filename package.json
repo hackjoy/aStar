@@ -1,10 +1,13 @@
 {
   "name": "aStar",
   "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "start": "node app.js"
-  },
+  "private": false,
+  "author": "Jack Hoy <jackhoy05@gmail.com>",
+  "keywords": ["astar", "game", "pathfinding", "graph", "movement", "map"],
+  "repository": {
+	  "type": "git",
+	  "url": "https://github.com/hackjoy/aStar"
+	},
   "dependencies": {
     "jade": "*",
     "coffee-script": "~1.6.3",

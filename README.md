@@ -1,11 +1,15 @@
-Algorithms
-================
+### A* Search
 
-Notable algorithms from computer science implemented in various languages.
++ [A* Search](http://en.wikipedia.org/wiki/A*): A special case of best-first graph search that uses heuristics to improve speed.  Written in CoffeeScript.
 
+#### Run the following:
+
+```
+$ npm install
+$ grunt && jasmine-node spec/aStarSpec.js
+```
+
+##### Inspired by:
+http://www.policyalmanac.org/games/aStarTutorial.htm
 http://en.wikipedia.org/wiki/List_of_algorithms
-
-
-###/graph_search
-
-+ [A* Search](http://en.wikipedia.org/wiki/A*): Special case of best-first search that uses heuristics to improve speed.  Written in CoffeeScript.
+http://en.wikipedia.org/wiki/A*

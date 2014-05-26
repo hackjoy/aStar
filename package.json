@@ -3,13 +3,12 @@
   "version": "0.1.10",
   "private": false,
   "author": "Jack Hoy <jackhoy05@gmail.com>",
-  "keywords": ["astar", "star", "search", "game", "shortest", "path", "pathfinding", "graph", "movement", "map"],
+  "keywords": ["a*", "astar", "star", "search", "game", "shortest", "path", "pathfinding", "graph", "movement", "map"],
   "repository": {
 	  "type": "git",
 	  "url": "https://github.com/hackjoy/aStar"
 	},
   "dependencies": {
-    "jade": "*",
     "coffee-script": "~1.6.3",
     "underscore": ""
   },

@@ -12,7 +12,7 @@
     "underscore": ""
   },
   "devDependencies": {
-    "jasmine-node": "",
+    "jasmine-node": ""
   },
   "license": "MIT"
 }

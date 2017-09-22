@@ -1,18 +1,18 @@
-var aStar;
-
 require('./specHelper');
 
-aStar = require('../src/aStar');
+var aStar = require('../src/aStar');
 
 describe("aStar search", function() {
   describe("generating and validating coordinates", function() {
+
     var currentLocation, destination, environment;
-    environment = currentLocation = destination = void 0;
+
     beforeEach(function() {
       currentLocation = {
         xAxis: 2,
         yAxis: 1
       };
+
       environment = {
         blockedLocations: [],
         worldSize: {
@@ -20,15 +20,16 @@ describe("aStar search", function() {
           yAxis: 10
         }
       };
-      return destination = {
+
+      destination = {
         xAxis: 4,
         yAxis: 1
       };
     });
+
     it('should generate adjacent coordinates to the current location', function() {
-      var adjacentLocations, expectedAdjacentLocations;
-      adjacentLocations = aStar.generateAdjacentLocations(currentLocation);
-      expectedAdjacentLocations = [
+      var adjacentLocations = aStar.generateAdjacentLocations(currentLocation);
+      var expectedAdjacentLocations = [
         {
           xAxis: 1,
           yAxis: 2,
@@ -63,8 +64,10 @@ describe("aStar search", function() {
           cost: 14
         }
       ];
-      return expect(adjacentLocations).toEqual(expectedAdjacentLocations);
+
+      expect(adjacentLocations).toEqual(expectedAdjacentLocations);
     });
+
     it('should validate coordinates to ensure they are not out of bounds or a wall', function() {
       var adjacentLocations, expectedValidLocations, validLocations;
       adjacentLocations = [
@@ -138,8 +141,10 @@ describe("aStar search", function() {
         }
       ];
       validLocations = aStar.validateLocations(adjacentLocations, environment);
-      return expect(validLocations).toEqual(expectedValidLocations);
+
+      expect(validLocations).toEqual(expectedValidLocations);
     });
+
     it('should not return coordinates that are walls', function() {
       var adjacentLocations, expectedValidLocations, validLocations;
       adjacentLocations = [
@@ -215,9 +220,11 @@ describe("aStar search", function() {
         }
       ];
       validLocations = aStar.validateLocations(adjacentLocations, environment);
-      return expect(validLocations).toEqual(expectedValidLocations);
+
+      expect(validLocations).toEqual(expectedValidLocations);
     });
-    return it('should not return coordinates that are outside the worldSize', function() {
+
+    it('should not return coordinates that are outside the worldSize', function() {
       var adjacentLocations, expectedValidLocations, validLocations;
       adjacentLocations = [
         {
@@ -282,10 +289,12 @@ describe("aStar search", function() {
         yAxis: 2
       };
       validLocations = aStar.validateLocations(adjacentLocations, environment);
-      return expect(validLocations).toEqual(expectedValidLocations);
+
+      expect(validLocations).toEqual(expectedValidLocations);
     });
   });
   describe("calculating costs", function() {
+
     it("should calculate the hCost", function() {
       var currentLocation, destination, hCost;
       currentLocation = {
@@ -297,9 +306,11 @@ describe("aStar search", function() {
         yAxis: 2
       };
       hCost = aStar.calculateHCost(currentLocation, destination);
-      return expect(hCost).toEqual(30);
+
+      expect(hCost).toEqual(30);
     });
-    return it('should find point with the lowest fCost in the openList', function() {
+
+    it('should find point with the lowest fCost in the openList', function() {
       var a1, a2, a3, openList;
       a1 = {
         xAxis: 3,
@@ -335,10 +346,13 @@ describe("aStar search", function() {
         }
       };
       openList = [a1, a2, a3];
-      return expect(aStar.findLocationWithLowestFCost(openList)).toEqual(a2);
+
+      expect(aStar.findLocationWithLowestFCost(openList)).toEqual(a2);
     });
   });
-  return describe("integration tests", function() {
+
+  describe("integration tests", function() {
+
     it("Easy Case A: should return the shortest path when travelling North with no obstacles", function() {
       var destination, environment, expectedResult, result, startLocation;
       startLocation = {
@@ -400,8 +414,10 @@ describe("aStar search", function() {
           }
         }
       ];
-      return expect(result).toEqual(expectedResult);
+
+      expect(result).toEqual(expectedResult);
     });
+
     it("Easy Case B: should return the shortest path when travelling East with no obstacles", function() {
       var destination, environment, expectedResult, result, startLocation;
       startLocation = {
@@ -463,9 +479,11 @@ describe("aStar search", function() {
           }
         }
       ];
-      return expect(result).toEqual(expectedResult);
+
+      expect(result).toEqual(expectedResult);
     });
-    return it("Medium Case A: should return the shortest path when travelling around a wall", function() {
+
+    it("Medium Case A: should return the shortest path when travelling around a wall", function() {
       var destination, environment, expectedResult, result, startLocation;
       startLocation = {
         xAxis: 1,
@@ -476,7 +494,7 @@ describe("aStar search", function() {
         yAxis: 1
       };
       environment = {
-        walls: [
+        blockedLocations: [
           {
             xAxis: 2,
             yAxis: 1
@@ -537,7 +555,8 @@ describe("aStar search", function() {
           }
         }
       ];
-      return expect(result).toEqual(expectedResult);
+
+      expect(result).toEqual(expectedResult);
     });
   });
 });

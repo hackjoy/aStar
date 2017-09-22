@@ -51,7 +51,7 @@ y
 
 ```
 $ npm install
-$ grunt && NODE_ENV=development jasmine-node spec/aStarSpec.js
+$ NODE_ENV=development jasmine-node spec/aStarSpec.js
 ```
 
 ##### References

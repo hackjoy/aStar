@@ -1,6 +1,6 @@
 {
   "name": "a-star-search",
-  "version": "0.1.12",
+  "version": "0.1.13",
   "private": false,
   "author": "Jack Hoy <jackhoy05@gmail.com>",
   "keywords": ["a*", "astar", "star", "search", "game", "shortest", "path", "pathfinding", "graph", "movement", "map"],
@@ -14,8 +14,6 @@
   },
   "devDependencies": {
     "jasmine-node": "",
-    "grunt": "^0.4.4",
-    "grunt-contrib-coffee": "^0.10.1"
   },
   "license": "MIT"
 }

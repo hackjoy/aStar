@@ -1,57 +1,34 @@
-var calculateHCost, createOpenListLocation, existsInClosedList, findLocationWithLowestFCost, generateAdjacentLocations, getAdjacentLocations, removeLocationFrom, run, sameLocation, updateOpenList, validateLocations, withinWorldBoundary, _;
+var _ = require('underscore');
 
-_ = require('underscore');
-
-generateAdjacentLocations = function(currentLocation) {
-  var adjacentLocations, adjacentMovements;
-  adjacentMovements = [
-    {
-      xAxis: -1,
-      yAxis: 1,
-      cost: 14
-    }, {
-      xAxis: 0,
-      yAxis: 1,
-      cost: 10
-    }, {
-      xAxis: 1,
-      yAxis: 1,
-      cost: 14
-    }, {
-      xAxis: -1,
-      yAxis: 0,
-      cost: 10
-    }, {
-      xAxis: 1,
-      yAxis: 0,
-      cost: 10
-    }, {
-      xAxis: -1,
-      yAxis: -1,
-      cost: 14
-    }, {
-      xAxis: 0,
-      yAxis: -1,
-      cost: 10
-    }, {
-      xAxis: 1,
-      yAxis: -1,
-      cost: 14
-    }
+var generateAdjacentLocations = function(currentLocation) {
+  var possibleAdjacentMovements = [
+    { xAxis: -1, yAxis: 1, cost: 14 },
+    { xAxis: 0, yAxis: 1, cost: 10 },
+    { xAxis: 1, yAxis: 1, cost: 14 },
+    { xAxis: -1, yAxis: 0, cost: 10 },
+    { xAxis: 1, yAxis: 0, cost: 10 },
+    { xAxis: -1, yAxis: -1, cost: 14 },
+    { xAxis: 0, yAxis: -1, cost: 10 },
+    { xAxis: 1, yAxis: -1, cost: 14 }
   ];
-  adjacentLocations = _.map(adjacentMovements, function(movement) {
-    movement.xAxis += this.xAxis;
-    movement.yAxis += this.yAxis;
-    return movement;
-  }, currentLocation);
+  var adjacentLocations = _.map(
+    possibleAdjacentMovements,
+    function(movement) {
+      movement.xAxis += this.xAxis;
+      movement.yAxis += this.yAxis;
+      return movement;
+    },
+    currentLocation
+  );
+
   return adjacentLocations;
 };
 
-validateLocations = function(adjacentLocations, environment) {
-  var validLocations;
-  validLocations = _.filter(adjacentLocations, function(location) {
+var validateLocations = function(adjacentLocations, environment) {
+  var validLocations = _.filter(adjacentLocations, function(location) {
     return withinWorldBoundary(location, environment);
   });
+
   if (environment.blockedLocations) {
     validLocations = _.filter(validLocations, function(location) {
       return !_.find(environment.blockedLocations, function(blockLocation) {
@@ -59,45 +36,43 @@ validateLocations = function(adjacentLocations, environment) {
       });
     });
   }
+
   return validLocations;
 };
 
-getAdjacentLocations = function(currentLocation, environment, destination) {
-  var adjacentLocations;
-  adjacentLocations = validateLocations(generateAdjacentLocations(currentLocation), environment);
-  adjacentLocations = _.map(adjacentLocations, function(location) {
+var getAdjacentLocations = function(currentLocation, environment, destination) {
+  var adjacentLocations = validateLocations(generateAdjacentLocations(currentLocation), environment);
+  return _.map(adjacentLocations, function(location) {
     return createOpenListLocation(location, currentLocation, destination);
   });
-  return adjacentLocations;
 };
 
-withinWorldBoundary = function(location, environment) {
-  if ((location.xAxis <= environment.worldSize.xAxis) && (location.yAxis <= environment.worldSize.yAxis) && (location.xAxis >= 0) && (location.yAxis >= 0)) {
-    return true;
-  } else {
-    return false;
-  }
+var withinWorldBoundary = function(location, environment) {
+  return (
+    (location.xAxis <= environment.worldSize.xAxis) &&
+    (location.yAxis <= environment.worldSize.yAxis) &&
+    (location.xAxis >= 0) &&
+    (location.yAxis >= 0)
+  );
 };
 
-calculateHCost = function(currentLocation, destination) {
-  return (Math.abs(destination.xAxis - currentLocation.xAxis) * 10) + (Math.abs(destination.yAxis - currentLocation.yAxis) * 10);
+var calculateHCost = function(currentLocation, destination) {
+  return (
+    (Math.abs(destination.xAxis - currentLocation.xAxis) * 10) +
+    (Math.abs(destination.yAxis - currentLocation.yAxis) * 10)
+  );
 };
 
-findLocationWithLowestFCost = function(openList) {
-  var locationWithLowestFCost;
-  locationWithLowestFCost = void 0;
-  _.map(openList, function(location) {
-    return locationWithLowestFCost = locationWithLowestFCost === void 0 || location.fCost < locationWithLowestFCost.fCost ? location : locationWithLowestFCost;
-  });
-  return locationWithLowestFCost;
+var findLocationWithLowestFCost = function(openList) {
+  return _.min(openList, function(location) { return location.fCost });
 };
 
-sameLocation = function(locationA, locationB) {
+var sameLocation = function(locationA, locationB) {
   if (locationA && locationB) {
     return locationA.xAxis === locationB.xAxis && locationA.yAxis === locationB.yAxis;
-  } else {
-    return false;
   }
+
+  return false;
 };
 
 removeLocationFrom = function(list, location) {
@@ -106,9 +81,8 @@ removeLocationFrom = function(list, location) {
   });
 };
 
-createOpenListLocation = function(newLocation, parentLocation, destination) {
-  var location;
-  location = {
+var createOpenListLocation = function(newLocation, parentLocation, destination) {
+  var location = {
     parent: {
       xAxis: parentLocation.xAxis,
       yAxis: parentLocation.yAxis
@@ -122,18 +96,18 @@ createOpenListLocation = function(newLocation, parentLocation, destination) {
   return location;
 };
 
-existsInClosedList = function(closedList, location) {
+var existsInClosedList = function(closedList, location) {
   return _.find(closedList, function(el) {
     return el.yAxis === location.yAxis && el.xAxis === location.xAxis;
   });
 };
 
-updateOpenList = function(openList, location, closedList) {
-  var openListMatch;
+var updateOpenList = function(openList, location, closedList) {
   if (!existsInClosedList(closedList, location)) {
-    openListMatch = _.find(openList, function(el) {
+    var openListMatch = _.find(openList, function(el) {
       return el.yAxis === location.yAxis && el.xAxis === location.xAxis;
     });
+
     if (!openListMatch) {
       openList.push(location);
     } else if (openListMatch.gCost > location.gCost) {
@@ -144,21 +118,23 @@ updateOpenList = function(openList, location, closedList) {
   return openList;
 };
 
-run = function(startLocation, destination, environment) {
-  var adjacentLocations, closedList, currentLocation, location, openList, _i, _len;
-  openList = [createOpenListLocation(startLocation, startLocation, destination)];
-  closedList = [];
-  currentLocation = {};
+var run = function(startLocation, destination, environment) {
+  var openList = [createOpenListLocation(startLocation, startLocation, destination)];
+  var closedList = [];
+  var currentLocation = {};
+
   while (!sameLocation(currentLocation, destination)) {
     currentLocation = findLocationWithLowestFCost(openList);
     openList = removeLocationFrom(openList, currentLocation);
     closedList.push(currentLocation);
-    adjacentLocations = getAdjacentLocations(currentLocation, environment, destination);
-    for (_i = 0, _len = adjacentLocations.length; _i < _len; _i++) {
-      location = adjacentLocations[_i];
+    var adjacentLocations = getAdjacentLocations(currentLocation, environment, destination);
+
+    for (var i = 0; i < adjacentLocations.length; i++) {
+      var location = adjacentLocations[i];
       openList = updateOpenList(openList, location, closedList);
     }
   }
+
   return closedList;
 };
 

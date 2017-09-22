@@ -9,7 +9,6 @@
 	  "url": "https://github.com/hackjoy/aStar"
 	},
   "dependencies": {
-    "coffee-script": "~1.6.3",
     "underscore": ""
   },
   "devDependencies": {
